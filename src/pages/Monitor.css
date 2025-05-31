@@ -1,0 +1,81 @@
+/* src/pages/Monitor.css */
+.monitor-container {
+  max-width: 600px;
+  width: 90%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.monitor-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+.monitor-card {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.monitor-card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.monitor-card-value {
+  font-size: 1.375rem;
+  color: #833ab4;
+}
+
+/* Mobile devices (up to 480px) */
+@media (max-width: 480px) {
+  .monitor-container {
+    width: 95%;
+    padding: 15px;
+    margin: 10px auto;
+  }
+
+  .monitor-title {
+    font-size: 1.25rem;
+  }
+
+  .monitor-card {
+    padding: 10px;
+  }
+
+  .monitor-card-title {
+    font-size: 1rem;
+  }
+
+  .monitor-card-value {
+    font-size: 1.125rem;
+  }
+}
+
+/* Tablet devices (481px to 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .monitor-container {
+    width: 90%;
+    padding: 18px;
+  }
+
+  .monitor-title {
+    font-size: 1.375rem;
+  }
+
+  .monitor-card-title {
+    font-size: 1.0625rem;
+  }
+
+  .monitor-card-value {
+    font-size: 1.25rem;
+  }
+}

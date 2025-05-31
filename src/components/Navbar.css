@@ -1,0 +1,56 @@
+/* src/components/Navbar.css */
+.navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  background-color: #fff;
+  border-top: 1px solid #eee;
+  padding: 10px 0;
+  height: 60px;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #999;
+  text-decoration: none;
+  font-size: 12px;
+  gap: 4px;
+}
+
+.nav-item.active {
+  color: #833ab4;
+}
+
+/* Mobile devices (up to 480px) */
+@media (max-width: 480px) {
+  .navbar {
+    height: 50px; /* Smaller height */
+    padding: 8px 0;
+  }
+
+  .nav-item {
+    font-size: 10px; /* Smaller text */
+  }
+
+  .nav-item svg {
+    width: 20px; /* Smaller icons */
+    height: 20px;
+  }
+}
+
+/* Tablet devices (481px to 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .navbar {
+    height: 55px;
+  }
+
+  .nav-item {
+    font-size: 11px;
+  }
+}
