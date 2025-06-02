@@ -11,6 +11,7 @@
   padding: 10px 0;
   height: 60px;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Ensure navbar stays above other content */
 }
 
 .nav-item {
@@ -21,10 +22,38 @@
   text-decoration: none;
   font-size: 12px;
   gap: 4px;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.nav-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
 .nav-item.active {
   color: #833ab4;
+}
+
+.nav-item.active .nav-content {
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
+  border-radius: 20px; /* Rounded pill shape */
+  color: #fff; /* White text/icon for contrast */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05); /* Slight scale for emphasis */
+  padding: 5px 20px;
+}
+
+.nav-item:hover .nav-content {
+  transform: scale(1.05); /* Hover scale effect */
+  transition: transform 0.3s;
+}
+
+.nav-item.active svg,
+.nav-item.active span {
+  color: #fff; /* Ensure icon and text are white when active */
 }
 
 /* Mobile devices (up to 480px) */
@@ -38,9 +67,18 @@
     font-size: 10px; /* Smaller text */
   }
 
+  .nav-content {
+    padding: 6px 8px; /* Smaller padding */
+  }
+
   .nav-item svg {
     width: 20px; /* Smaller icons */
     height: 20px;
+  }
+
+  .nav-item.active .nav-content {
+    border-radius: 16px; /* Slightly smaller radius */
+    transform: scale(1.03); /* Reduced scale for mobile */
   }
 }
 
@@ -52,5 +90,21 @@
 
   .nav-item {
     font-size: 11px;
+  }
+
+  .nav-content {
+    padding: 7px 10px;
+  }
+
+  .nav-item.active .nav-content {
+    border-radius: 18px; /* Medium radius */
+    transform: scale(1.04);
+  }
+}
+
+/* Larger screens (above 768px) */
+@media (min-width: 769px) {
+  .nav-content {
+    padding: 8px 12px;
   }
 }

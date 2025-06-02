@@ -1,5 +1,5 @@
 // src/pages/Create.js
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { IoAdd, IoArrowBack, IoPaperPlaneOutline, IoImageOutline, IoVideocamOutline, IoTextOutline } from 'react-icons/io5';
 import './Create.css';
 
@@ -9,6 +9,8 @@ function Create() {
   const [modalType, setModalType] = useState(null);
   const [postContent, setPostContent] = useState(null);
   const [caption, setCaption] = useState('');
+  const [fileName, setFileName] = useState('');
+  const fileInputRef = useRef(null);
 
   // Simulate loading delay (replace with actual data fetching later)
   useEffect(() => {
@@ -18,21 +20,36 @@ function Create() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Clean up object URLs to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (postContent) URL.revokeObjectURL(postContent);
+    };
+  }, [postContent]);
+
   const toggleFab = () => setIsFabOpen(!isFabOpen);
   const openModal = (type) => {
     setModalType(type);
     setIsFabOpen(false); // Close FAB buttons when modal opens
     setPostContent(null); // Reset content
     setCaption(''); // Reset caption
+    setFileName(''); // Reset file name
   };
   const closeModal = () => setModalType(null);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) setPostContent(URL.createObjectURL(file));
+    if (file) {
+      setPostContent(URL.createObjectURL(file));
+      setFileName(file.name);
+    }
   };
 
   const handleCaptionChange = (e) => setCaption(e.target.value);
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <div className="create-page">
@@ -94,12 +111,20 @@ function Create() {
             )}
             {modalType === 'image' && (
               <>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="modal-input"
-                  onChange={handleFileChange}
-                />
+                <div className="file-input-container">
+                  <button className="file-input-button" onClick={triggerFileInput}>
+                    <IoImageOutline size={20} />
+                    Choose Image
+                  </button>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="file-input-hidden"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                  />
+                  {fileName && <span className="file-name">{fileName}</span>}
+                </div>
                 {postContent && <img src={postContent} alt="Preview" className="modal-preview" />}
                 <textarea
                   className="modal-input modal-textarea"
@@ -111,12 +136,20 @@ function Create() {
             )}
             {modalType === 'video' && (
               <>
-                <input
-                  type="file"
-                  accept="video/*"
-                  className="modal-input"
-                  onChange={handleFileChange}
-                />
+                <div className="file-input-container">
+                  <button className="file-input-button" onClick={triggerFileInput}>
+                    <IoVideocamOutline size={20} />
+                    Choose Video
+                  </button>
+                  <input
+                    type="file"
+                    accept="video/*"
+                    className="file-input-hidden"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                  />
+                  {fileName && <span className="file-name">{fileName}</span>}
+                </div>
                 {postContent && <video src={postContent} controls className="modal-preview" />}
                 <textarea
                   className="modal-input modal-textarea"

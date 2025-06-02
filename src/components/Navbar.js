@@ -7,16 +7,22 @@ function Navbar() {
   return (
     <nav className="navbar">
       <NavLink to="/" className="nav-item" activeClassName="active">
-        <IoAddCircleOutline size={24} />
-        <span>Create</span>
+        <div className="nav-content">
+          <IoAddCircleOutline size={24} />
+          <span>Create</span>
+        </div>
       </NavLink>
       <NavLink to="/monitor" className="nav-item" activeClassName="active">
-        <IoStatsChartOutline size={24} />
-        <span>Analytics</span>
+        <div className="nav-content">
+          <IoStatsChartOutline size={24} />
+          <span>Analytics</span>
+        </div>
       </NavLink>
       <NavLink to="/profile" className="nav-item" activeClassName="active">
-        <IoPersonOutline size={24} />
-        <span>Profile</span>
+        <div className="nav-content">
+          <IoPersonOutline size={24} />
+          <span>Profile</span>
+        </div>
       </NavLink>
     </nav>
   );
