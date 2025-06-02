@@ -73,7 +73,7 @@ function Profile() {
               </div>
               <p className="profile-bio">Building cool stuff, one post at a time!</p>
               <a href="https://example.com" target="_blank" rel="noopener noreferrer" className="profile-link">
-                example.com
+                mywebsite.com
               </a>
             </div>
           </div>
