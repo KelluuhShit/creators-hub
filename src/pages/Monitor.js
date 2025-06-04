@@ -1,17 +1,19 @@
 // src/pages/Monitor.js
-import { useState, useEffect } from 'react';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale, Filler, Title, Legend, Tooltip } from 'chart.js';
-import { IoClose, IoArrowUp, IoRemove, IoArrowDown } from 'react-icons/io5';
+import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, BarElement, PointElement, LinearScale, CategoryScale, Title, Legend, Tooltip } from 'chart.js';
+import { IoArrowUp, IoRemove, IoArrowDown } from 'react-icons/io5';
 import './Monitor.css';
 
 // Register Chart.js components
-ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Filler, Title, Legend, Tooltip);
+ChartJS.register(BarElement, PointElement, LinearScale, CategoryScale, Title, Legend, Tooltip);
 
 function Monitor() {
   const [isLoading, setIsLoading] = useState(true);
   const [timePeriod, setTimePeriod] = useState('month');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   // Simulate loading delay (replace with API call later)
   useEffect(() => {
@@ -22,7 +24,7 @@ function Monitor() {
   const timePeriods = ['year', 'month', 'week', 'day'];
 
   // Mock chart data with unique datasets
-  const getChartData = (label, dataPoints, borderColor = '#833AB4', backgroundColor = 'rgba(131, 58, 180, 0.2)') => ({
+  const getChartData = (label, dataPoints, borderColor = '#833AB4', backgroundColor = 'rgba(131, 58, 180, 0.6)') => ({
     labels: timePeriod === 'year' ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] :
             timePeriod === 'month' ? ['Week 1', 'Week 2', 'Week 3', 'Week 4'] :
             timePeriod === 'week' ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] :
@@ -32,8 +34,7 @@ function Monitor() {
       data: dataPoints,
       borderColor,
       backgroundColor,
-      fill: true,
-      tension: 0.4,
+      borderWidth: 1,
     }],
   });
 
@@ -44,7 +45,11 @@ function Monitor() {
       title: { display: true, text: '' },
       tooltip: { enabled: true },
     },
-    scales: { y: { beginAtZero: true } },
+    scales: {
+      y: { beginAtZero: true },
+      x: { ticks: { font: { size: 10 } } },
+    },
+    maintainAspectRatio: false,
   };
 
   // Compute card metrics
@@ -54,15 +59,15 @@ function Monitor() {
     const first = data[0];
     const last = data[data.length - 1];
     let trend, trendIcon, trendColor;
-    if (last > first * 1.05) { // Up if last value is >5% higher
+    if (last > first * 1.05) {
       trend = 'Up';
       trendIcon = <IoArrowUp />;
-      trendColor = '#28a745'; // Green
-    } else if (last < first * 0.95) { // Down if last value is <5% lower
+      trendColor = '#28a745';
+    } else if (last < first * 0.95) {
       trend = 'Down';
       trendIcon = <IoArrowDown />;
-      trendColor = '#dc3545'; // Red
-    } else { // Stable if within ±5%
+      trendColor = '#dc3545';
+    } else {
       trend = 'Stable';
       trendIcon = <IoRemove />;
       trendColor = '#ffc107';
@@ -78,7 +83,7 @@ function Monitor() {
     return { value, trend, trendIcon, trendColor };
   };
 
-  const charts = [
+  const charts = useMemo(() => [
     {
       title: 'Likes Chart',
       data: getChartData('Likes',
@@ -96,7 +101,7 @@ function Monitor() {
         timePeriod === 'month' ? [100, 150, 200, 180] :
         timePeriod === 'week' ? [50, 60, 80, 100, 90, 120, 110] :
         [20, 30, 50, 40, 35],
-        '#FD1D1D', 'rgba(253, 29, 29, 0.2)'
+        '#FD1D1D', 'rgba(253, 29, 29, 0.6)'
       ),
       color: '#FD1D1D',
     },
@@ -107,7 +112,7 @@ function Monitor() {
         timePeriod === 'month' ? [70, 75, 80, 85] :
         timePeriod === 'week' ? [60, 62, 65, 68, 70, 72, 75] :
         [50, 52, 55, 54, 53],
-        '#FCAF45', 'rgba(252, 175, 69, 0.2)'
+        '#FCAF45', 'rgba(252, 175, 69, 0.6)'
       ),
       color: '#FCAF45',
     },
@@ -131,10 +136,9 @@ function Monitor() {
       ),
       color: '#833AB4',
     },
-  ];
+  ], [timePeriod]);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const handleRevenueClick = () => navigate('/revenue');
 
   return (
     <div className="monitor-container">
@@ -143,19 +147,26 @@ function Monitor() {
           <div className="skeleton-title"></div>
           <div className="skeleton-buttons"></div>
           <div className="skeleton-chart-row">
-            <div className="skeleton-chart"></div>
-            <div className="skeleton-chart"></div>
+            {[...Array(5)].map((_, index) => (
+              <div key={index} className="skeleton-chart"></div>
+            ))}
           </div>
-          <div className="skeleton-button"></div>
           <div className="skeleton-card-grid">
             {[...Array(5)].map((_, index) => (
               <div key={index} className="skeleton-card"></div>
             ))}
           </div>
         </div>
+      ) : error ? (
+        <div className="error-message">Error: {error}</div>
       ) : (
         <>
-          <h1 className="monitor-title">Statistics Dashboard</h1>
+          <div className="monitor-header">
+            <h4 className="monitor-title">Statistics Dashboard</h4>
+            <button className="open-revenue" onClick={handleRevenueClick} aria-label="View revenue statistics">
+              Revenue
+            </button>
+          </div>
           <div className="time-period-buttons">
             {timePeriods.map((period) => (
               <button
@@ -163,25 +174,28 @@ function Monitor() {
                 className={`time-period-button ${timePeriod === period ? 'active' : ''}`}
                 onClick={() => setTimePeriod(period)}
                 aria-pressed={timePeriod === period}
+                aria-label={`View statistics for ${period}`}
               >
                 {period.charAt(0).toUpperCase() + period.slice(1)}
               </button>
             ))}
           </div>
-          <div className="chart-row">
-            {charts.slice(0, 2).map((chart, index) => (
-              <div key={index} className="chart-container">
-                <h2 className="chart-title">{chart.title}</h2>
-                <Line
-                  data={chart.data}
-                  options={{ ...chartOptions, plugins: { ...chartOptions.plugins, title: { ...chartOptions.plugins.title, text: chart.title } } }}
-                />
-              </div>
-            ))}
+          <div className="chart-scroll-container">
+            <div className="chart-row">
+              {charts.map((chart, index) => (
+                <div key={index} className="chart-container">
+                  <h2 className="chart-title">{chart.title}</h2>
+                  <div className="chart-wrapper">
+                    <Bar
+                      data={chart.data}
+                      options={{ ...chartOptions, plugins: { ...chartOptions.plugins, title: { ...chartOptions.plugins.title, text: chart.title } } }}
+                      height={200}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <button className="see-all-button" onClick={openModal}>
-            See All
-          </button>
           <div className="card-grid">
             {charts.map((chart, index) => {
               const { value, trendIcon, trendColor } = getCardMetrics(chart.data.datasets[0].data, chart.title);
@@ -196,27 +210,6 @@ function Monitor() {
               );
             })}
           </div>
-          {isModalOpen && (
-            <div className="modal-overlay">
-              <div className="modal-content">
-                <button className="modal-close" onClick={closeModal} aria-label="Close Modal">
-                  <IoClose size={24} />
-                </button>
-                <h2 className="modal-title">All Statistics</h2>
-                <div className="modal-charts">
-                  {charts.map((chart, index) => (
-                    <div key={index} className="chart-container">
-                      <h3 className="chart-title">{chart.title}</h3>
-                      <Line
-                        data={chart.data}
-                        options={{ ...chartOptions, plugins: { ...chartOptions.plugins, title: { ...chartOptions.plugins.title, text: chart.title } } }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
         </>
       )}
     </div>

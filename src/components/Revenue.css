@@ -1,0 +1,360 @@
+/* src/pages/Revenue.css */
+.revenue-container {
+  max-width: 1200px;
+  width: 90%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-sizing: border-box;
+  min-height: calc(100vh - 40px);
+}
+
+.revenue-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.revenue-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.back-button {
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.back-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+.estimated-revenue-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 20px;
+  text-align: center;
+}
+
+.currency-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 20px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.currency-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.currency-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.currency-value {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #833AB4;
+}
+
+.time-period-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.time-period-button {
+  background: #f9f9f9;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.time-period-button:hover {
+  transform: scale(1.05);
+}
+
+.time-period-button.active {
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
+  color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.chart-scroll-container {
+  overflow-x: auto;
+  margin-bottom: 20px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.chart-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  min-width: fit-content;
+}
+
+.chart-container {
+  flex: 0 0 auto;
+  width: 250px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.chart-wrapper {
+  height: 200px;
+}
+
+.chart-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.performance-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 20px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.performance-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.performance-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.performance-value {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #833AB4;
+}
+
+.action-button-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.action-button {
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 20px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s;
+  width: 100%;
+}
+
+.action-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+/* Mobile devices (up to 480px) */
+@media (max-width: 480px) {
+  .revenue-container {
+    width: 95%;
+    padding: 15px;
+    margin: 10px auto;
+  }
+
+  .revenue-title {
+    font-size: 1.25rem;
+  }
+
+  .back-button {
+    padding: 8px 15px;
+    font-size: 0.875rem;
+  }
+
+  .estimated-revenue-title {
+    font-size: 1.125rem;
+  }
+
+  .currency-section {
+    flex-direction: row;
+    gap: 20px;
+    padding: 8px;
+    flex-wrap: wrap;
+  }
+
+  .currency-item {
+    gap: 8px;
+  }
+
+  .currency-label {
+    font-size: 0.875rem;
+  }
+
+  .currency-value {
+    font-size: 1.125rem;
+  }
+
+  .time-period-button {
+    padding: 8px 15px;
+    font-size: 0.875rem;
+  }
+
+  .chart-container {
+    width: 200px;
+  }
+
+  .chart-wrapper {
+    height: 150px;
+  }
+
+  .chart-title {
+    font-size: 0.875rem;
+  }
+
+  .performance-card {
+    flex-direction: column;
+    gap: 20px;
+    padding: 8px;
+    flex-wrap: wrap;
+  }
+
+  .performance-item {
+    gap: 8px;
+  }
+
+  .performance-label {
+    font-size: 0.875rem;
+  }
+
+  .performance-value {
+    font-size: 1.125rem;
+  }
+
+  .action-button {
+    padding: 8px 15px;
+    font-size: 0.875rem;
+  }
+}
+
+/* Tablet devices (481px to 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .revenue-container {
+    width: 90%;
+    padding: 18px;
+  }
+
+  .revenue-title {
+    font-size: 1.375rem;
+  }
+
+  .back-button {
+    padding: 9px 18px;
+    font-size: 0.9375rem;
+  }
+
+  .estimated-revenue-title {
+    font-size: 1.1875rem;
+  }
+
+  .currency-section {
+    flex-direction: row;
+    gap: 30px;
+    padding: 9px;
+  }
+
+  .currency-item {
+    gap: 9px;
+  }
+
+  .currency-label {
+    font-size: 0.9375rem;
+  }
+
+  .currency-value {
+    font-size: 1.1875rem;
+  }
+
+  .time-period-button {
+    padding: 9px 18px;
+    font-size: 0.9375rem;
+  }
+
+  .chart-container {
+    width: 220px;
+  }
+
+  .chart-wrapper {
+    height: 180px;
+  }
+
+  .chart-title {
+    font-size: 0.9375rem;
+  }
+
+  .performance-card {
+    flex-direction: row;
+    gap: 30px;
+    padding: 9px;
+  }
+
+  .performance-item {
+    gap: 9px;
+  }
+
+  .performance-label {
+    font-size: 0.9375rem;
+  }
+
+  .performance-value {
+    font-size: 1.1875rem;
+  }
+
+  .action-button {
+    padding: 9px 18px;
+    font-size: 0.9375rem;
+  }
+}
