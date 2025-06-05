@@ -1,0 +1,123 @@
+/* src/pages/Success.css */
+.success-container {
+  max-width: 1200px;
+  width: 90%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-sizing: border-box;
+  min-height: calc(100vh - 40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-content {
+  max-width: 600px;
+  text-align: center;
+}
+
+.success-icon {
+  font-size: 5rem;
+  color: #28A745;
+  margin-bottom: 20px;
+}
+
+.success-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.amount-text {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #833AB4; /* Match Payout balance-value color */
+  margin-bottom: 10px;
+}
+
+.account-text {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.done-button {
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.done-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+/* Mobile devices (up to 480px) */
+@media (max-width: 480px) {
+  .success-container {
+    width: 95%;
+    padding: 15px;
+    margin: 10px auto;
+  }
+
+  .success-icon {
+    font-size: 4rem;
+  }
+
+  .success-title {
+    font-size: 1.5rem;
+  }
+
+  .amount-text {
+    font-size: 1rem;
+  }
+
+  .account-text {
+    font-size: 0.875rem;
+  }
+
+  .done-button {
+    padding: 8px 15px;
+    font-size: 0.875rem;
+  }
+}
+
+/* Tablet devices (481px to 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .success-container {
+    width: 90%;
+    padding: 18px;
+  }
+
+  .success-icon {
+    font-size: 4.5rem;
+  }
+
+  .success-title {
+    font-size: 1.625rem;
+  }
+
+  .amount-text {
+    font-size: 1.125rem;
+  }
+
+  .account-text {
+    font-size: 0.9375rem;
+  }
+
+  .done-button {
+    padding: 9px 18px;
+    font-size: 0.9375rem;
+  }
+}

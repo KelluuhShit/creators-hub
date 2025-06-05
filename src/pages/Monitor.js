@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, BarElement, PointElement, LinearScale, CategoryScale, Title, Legend, Tooltip } from 'chart.js';
-import { IoArrowUp, IoRemove, IoArrowDown } from 'react-icons/io5';
+import { IoArrowUp, IoRemove, IoArrowDown, IoInformationCircleOutline, IoClose } from 'react-icons/io5';
 import './Monitor.css';
 
 // Register Chart.js components
@@ -13,6 +13,7 @@ function Monitor() {
   const [isLoading, setIsLoading] = useState(true);
   const [timePeriod, setTimePeriod] = useState('month');
   const [error, setError] = useState(null);
+  const [modalChart, setModalChart] = useState(null); // State for modal
   const navigate = useNavigate();
 
   // Simulate loading delay (replace with API call later)
@@ -83,6 +84,18 @@ function Monitor() {
     return { value, trend, trendIcon, trendColor };
   };
 
+  // Mock descriptions for each metric
+  const getMetricDescription = (title) => {
+    const descriptions = {
+      'Likes Chart': 'Total Likes measures user engagement through positive interactions with your content over the selected time period.',
+      'Promoted Views Chart': 'Promoted Views tracks the number of views driven by paid promotions, reflecting the effectiveness of your advertising efforts.',
+      'Consistency Chart': 'Consistency represents the regularity of your content performance, calculated as a percentage of expected activity.',
+      'Posts Chart': 'Posts counts the number of content items published, indicating your content creation activity.',
+      'Views Chart': 'Total Views measures the overall reach of your content, including both organic and promoted views.',
+    };
+    return descriptions[title] || 'No description available.';
+  };
+
   const charts = useMemo(() => [
     {
       title: 'Likes Chart',
@@ -139,6 +152,9 @@ function Monitor() {
   ], [timePeriod]);
 
   const handleRevenueClick = () => navigate('/revenue');
+
+  const handleOpenModal = (chart) => setModalChart(chart);
+  const handleCloseModal = () => setModalChart(null);
 
   return (
     <div className="monitor-container">
@@ -201,7 +217,16 @@ function Monitor() {
               const { value, trendIcon, trendColor } = getCardMetrics(chart.data.datasets[0].data, chart.title);
               return (
                 <div key={index} className="monitor-card" style={{ borderLeft: `4px solid ${chart.color}` }}>
-                  <h2 className="monitor-card-title">{chart.title.replace(' Chart', '')}</h2>
+                  <div className="monitor-card-header">
+                    <h2 className="monitor-card-title">{chart.title.replace(' Chart', '')}</h2>
+                    <button
+                      className="info-icon"
+                      onClick={() => handleOpenModal(chart)}
+                      aria-label={`View details for ${chart.title.replace(' Chart', '')}`}
+                    >
+                      <IoInformationCircleOutline />
+                    </button>
+                  </div>
                   <p className="monitor-card-value">{value}</p>
                   <span className="monitor-card-trend" style={{ color: trendColor }}>
                     {trendIcon}
@@ -210,6 +235,24 @@ function Monitor() {
               );
             })}
           </div>
+          {modalChart && (
+            <div className="modal-overlay" onClick={handleCloseModal}>
+              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <button className="modal-close" onClick={handleCloseModal} aria-label="Close modal">
+                  <IoClose />
+                </button>
+                <h2 className="modal-title">{modalChart.title}</h2>
+                <div className="modal-chart-wrapper">
+                  <Bar
+                    data={modalChart.data}
+                    options={{ ...chartOptions, plugins: { ...chartOptions.plugins, title: { ...chartOptions.plugins.title, text: modalChart.title } } }}
+                    height={300}
+                  />
+                </div>
+                <p className="modal-description">{getMetricDescription(modalChart.title)}</p>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>

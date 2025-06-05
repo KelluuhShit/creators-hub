@@ -1,6 +1,6 @@
 // src/pages/Revenue.js
-import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useMemo, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, BarElement, PointElement, LinearScale, CategoryScale, Title, Legend, Tooltip } from 'chart.js';
 import './Revenue.css';
@@ -10,12 +10,21 @@ ChartJS.register(BarElement, PointElement, LinearScale, CategoryScale, Title, Le
 
 function Revenue() {
   const navigate = useNavigate();
+  const { state } = useLocation();
   const [timePeriod, setTimePeriod] = useState('month');
+  const [balance, setBalance] = useState(null); // Store balance
 
   const timePeriods = ['year', 'month', 'week', 'day'];
-  const RPM = 0.4; // Revenue Per Mille ($0.4 per 1000 impressions)
+  const RPM = 0.5; // Revenue Per Mille ($0.5 per 1000 impressions)
 
-  // Mock chart data (same as Monitor.js)
+  // Update balance from navigation state if available
+  useEffect(() => {
+    if (state?.newBalance !== undefined) {
+      setBalance(state.newBalance);
+    }
+  }, [state]);
+
+  // Mock chart data
   const getChartData = (label, dataPoints, borderColor = '#833AB4', backgroundColor = 'rgba(131, 58, 180, 0.6)') => ({
     labels: timePeriod === 'year' ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] :
             timePeriod === 'month' ? ['Week 1', 'Week 2', 'Week 3', 'Week 4'] :
@@ -69,22 +78,24 @@ function Revenue() {
     },
   ], [timePeriod]);
 
-  // Calculate revenue based on Promoted Views and RPM
+  // Calculate revenue based on Promoted Views and RPM (numeric)
   const calculateRevenue = () => {
-    const promotedViews = charts[0].data.datasets[0].data; // Promoted Views data
+    const promotedViews = charts[0].data.datasets[0].data;
     const totalImpressions = promotedViews.reduce((acc, val) => acc + val, 0);
-    const revenue = (totalImpressions / 1000) * RPM;
-    return revenue.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    return (totalImpressions / 1000) * RPM; // Return numeric value
   };
+
+  // Use calculated revenue if no balance set
+  const currentBalance = balance !== null ? balance : calculateRevenue();
 
   // Calculate performance metrics
   const calculatePerformanceMetrics = useMemo(() => {
-    const promotedViews = charts[0].data.datasets[0].data; // Promoted Views data
-    const views = charts[1].data.datasets[0].data; // Views data
+    const promotedViews = charts[0].data.datasets[0].data;
+    const views = charts[1].data.datasets[0].data;
     const totalImpressions = promotedViews.reduce((acc, val) => acc + val, 0);
     const totalViews = views.reduce((acc, val) => acc + val, 0);
     const revenue = (totalImpressions / 1000) * RPM;
-    const accountWorth = revenue * 10; // 10x revenue as account worth
+    const accountWorth = revenue * 10;
     return {
       accountWorth: accountWorth.toLocaleString('en-US', { style: 'currency', currency: 'USD' }),
       totalViews: totalViews.toLocaleString('en-US'),
@@ -94,9 +105,8 @@ function Revenue() {
 
   const handleBackClick = () => navigate('/monitor');
 
-  const handleActionClick = () => {
-    console.log('Detailed report requested');
-    // Placeholder for future action (e.g., navigate, API call)
+  const handlePayoutClick = () => {
+    navigate('/payout', { state: { balance: currentBalance } });
   };
 
   return (
@@ -111,11 +121,11 @@ function Revenue() {
       <div className="currency-section">
         <div className="currency-item">
           <span className="currency-label">Revenue (USD):</span>
-          <span className="currency-value">{calculateRevenue()}</span>
+          <span className="currency-value">{currentBalance.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
         </div>
         <div className="currency-item">
           <span className="currency-label">RPM:</span>
-          <span className="currency-value">$0.4</span>
+          <span className="currency-value">{RPM.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
         </div>
       </div>
       <div className="time-period-buttons">
@@ -162,7 +172,7 @@ function Revenue() {
         </div>
       </div>
       <div className="action-button-container">
-        <button className="action-button" onClick={handleActionClick} aria-label="View detailed revenue report">
+        <button className="action-button" onClick={handlePayoutClick} aria-label="Go to payout">
           Payout
         </button>
       </div>
