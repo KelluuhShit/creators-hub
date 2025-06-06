@@ -41,6 +41,12 @@
 .account-text {
   font-size: 1rem;
   color: #555;
+  margin-bottom: 10px;
+}
+
+.balance-text {
+  font-size: 1rem;
+  color: #555;
   margin-bottom: 20px;
 }
 
@@ -87,6 +93,10 @@
     font-size: 0.875rem;
   }
 
+  .balance-text {
+    font-size: 0.875rem;
+  }
+
   .done-button {
     padding: 8px 15px;
     font-size: 0.875rem;
@@ -113,6 +123,10 @@
   }
 
   .account-text {
+    font-size: 0.9375rem;
+  }
+
+  .balance-text {
     font-size: 0.9375rem;
   }
 

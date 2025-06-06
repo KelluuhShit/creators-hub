@@ -24,7 +24,7 @@ function Monitor() {
 
   const timePeriods = ['year', 'month', 'week', 'day'];
 
-  // Mock chart data with unique datasets
+  // Mock chart data with unique datasets and rounded bars
   const getChartData = (label, dataPoints, borderColor = '#833AB4', backgroundColor = 'rgba(131, 58, 180, 0.6)') => ({
     labels: timePeriod === 'year' ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] :
             timePeriod === 'month' ? ['Week 1', 'Week 2', 'Week 3', 'Week 4'] :
@@ -36,6 +36,7 @@ function Monitor() {
       borderColor,
       backgroundColor,
       borderWidth: 1,
+      borderRadius: 5, // Add border radius to round bar corners
     }],
   });
 
@@ -200,7 +201,6 @@ function Monitor() {
             <div className="chart-row">
               {charts.map((chart, index) => (
                 <div key={index} className="chart-container">
-                  <h2 className="chart-title">{chart.title}</h2>
                   <div className="chart-wrapper">
                     <Bar
                       data={chart.data}

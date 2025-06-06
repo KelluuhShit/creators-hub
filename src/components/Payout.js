@@ -16,7 +16,7 @@ function Payout() {
   const [activeAccount, setActiveAccount] = useState(null);
 
   const RPM = 0.5; // $0.50 per 1000 impressions
-  const TRANSACTION_FEE = 0.05; // Fixed fee $0.50
+  const TRANSACTION_FEE = 0.05; // Fixed fee $0.05
 
   // Load active account from localStorage or navigation state
   useEffect(() => {
@@ -38,22 +38,20 @@ function Payout() {
     const amount = parseFloat(value);
     if (isNaN(amount) || amount <= 0) {
       setWithdrawalError('Please enter a valid amount greater than 0.');
-    } else if (amount > balance - TRANSACTION_FEE) {
-      setWithdrawalError(`Amount plus $${TRANSACTION_FEE} fee exceeds available balance.`);
-    } else if (amount < TRANSACTION_FEE) {
-      setWithdrawalError(`Amount must cover the $${TRANSACTION_FEE} transaction fee.`);
+    } else if (amount > balance) {
+      setWithdrawalError('Amount exceeds available balance.');
     } else {
       setWithdrawalError('');
     }
   };
 
   const handleMaxClick = () => {
-    if (balance >= TRANSACTION_FEE) {
-      const maxAmount = (balance - TRANSACTION_FEE).toFixed(2);
+    if (balance > 0) {
+      const maxAmount = balance.toFixed(2);
       setWithdrawalAmount(maxAmount);
       setWithdrawalError('');
     } else {
-      setWithdrawalError(`Balance is less than the $${TRANSACTION_FEE} transaction fee.`);
+      setWithdrawalError('Insufficient balance.');
     }
   };
 
@@ -61,12 +59,10 @@ function Payout() {
     if (!withdrawalError && withdrawalAmount && !isProcessing && activeAccount) {
       setIsProcessing(true);
       const amount = parseFloat(withdrawalAmount);
-      const netAmount = amount - TRANSACTION_FEE;
-      const newBalance = balance - amount; // Deduct gross amount
-      console.log(`Payout requested: $${amount.toFixed(2)}, Net after $${TRANSACTION_FEE} fee: $${netAmount.toFixed(2)}, New balance: $${newBalance.toFixed(2)}`);
+      console.log(`Payout requested: $${amount.toFixed(2)}, Balance remains: $${balance.toFixed(2)}`);
       setTimeout(() => {
         setIsProcessing(false);
-        navigate('/success', { state: { amount, netAmount, newBalance, activeAccount } });
+        navigate('/confirm-withdraw', { state: { amount, balance, activeAccount } });
       }, 3000); // 3-second delay
     } else if (!activeAccount) {
       setWithdrawalError('Please select a withdrawal account.');
@@ -74,7 +70,7 @@ function Payout() {
   };
 
   const handleChangeAccount = () => {
-    navigate('/choose-account', { state: { balance, activeAccount } });
+    navigate('/choose-account', { state: { balance, activeAccount, returnPath: '/payout' } });
   };
 
   return (
@@ -131,8 +127,8 @@ function Payout() {
             value={withdrawalAmount}
             onChange={handleWithdrawalChange}
             placeholder="Enter amount"
-            min={TRANSACTION_FEE.toFixed(2)}
-            max={(balance - TRANSACTION_FEE).toFixed(2)}
+            min="0.01"
+            max={balance.toFixed(2)}
             step="0.01"
             aria-label="Withdrawal amount"
             disabled={isProcessing}
