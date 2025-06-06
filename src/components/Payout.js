@@ -1,8 +1,9 @@
 // src/pages/Payout.js
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { IoCheckmarkCircleOutline, IoInformationCircleOutline } from 'react-icons/io5';
 import { FaSpinner } from 'react-icons/fa6';
+import { FaUniversity } from 'react-icons/fa';
 import './Payout.css';
 
 function Payout() {
@@ -12,9 +13,22 @@ function Payout() {
   const [withdrawalAmount, setWithdrawalAmount] = useState('');
   const [withdrawalError, setWithdrawalError] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [activeAccount, setActiveAccount] = useState(null);
 
   const RPM = 0.5; // $0.50 per 1000 impressions
   const TRANSACTION_FEE = 0.05; // Fixed fee $0.50
+
+  // Load active account from localStorage or navigation state
+  useEffect(() => {
+    if (state?.activeAccount) {
+      setActiveAccount(state.activeAccount);
+    } else {
+      const savedAccount = JSON.parse(localStorage.getItem('savedAccount'));
+      if (savedAccount) {
+        setActiveAccount(savedAccount);
+      }
+    }
+  }, [state]);
 
   const handleBackClick = () => navigate('/revenue');
 
@@ -44,7 +58,7 @@ function Payout() {
   };
 
   const handleProceedClick = () => {
-    if (!withdrawalError && withdrawalAmount && !isProcessing) {
+    if (!withdrawalError && withdrawalAmount && !isProcessing && activeAccount) {
       setIsProcessing(true);
       const amount = parseFloat(withdrawalAmount);
       const netAmount = amount - TRANSACTION_FEE;
@@ -52,9 +66,15 @@ function Payout() {
       console.log(`Payout requested: $${amount.toFixed(2)}, Net after $${TRANSACTION_FEE} fee: $${netAmount.toFixed(2)}, New balance: $${newBalance.toFixed(2)}`);
       setTimeout(() => {
         setIsProcessing(false);
-        navigate('/success', { state: { amount, netAmount, newBalance } });
+        navigate('/success', { state: { amount, netAmount, newBalance, activeAccount } });
       }, 3000); // 3-second delay
+    } else if (!activeAccount) {
+      setWithdrawalError('Please select a withdrawal account.');
     }
+  };
+
+  const handleChangeAccount = () => {
+    navigate('/choose-account', { state: { balance, activeAccount } });
   };
 
   return (
@@ -68,6 +88,24 @@ function Payout() {
       <div className="payout-content">
         <h2 className="balance-title">Total Balance</h2>
         <p className="balance-value">{balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</p>
+        {activeAccount && (
+          <div className="active-account-card">
+            <div className="bank-icon">
+              <FaUniversity size={24} color="#833ab4" />
+            </div>
+            <div className="bank-details">
+              <span className="bank-name">{activeAccount.bank}</span>
+              <span className="account-number">Account: {activeAccount.accountNumber}</span>
+            </div>
+            <button
+              className="change-button"
+              onClick={handleChangeAccount}
+              aria-label="Change active account"
+            >
+              Change
+            </button>
+          </div>
+        )}
         <ul className="payout-details">
           {[
             'Total revenue earned',
@@ -93,8 +131,8 @@ function Payout() {
             value={withdrawalAmount}
             onChange={handleWithdrawalChange}
             placeholder="Enter amount"
-            min={TRANSACTION_FEE.toFixed(2)} // Ensure amount covers fee
-            max={(balance - TRANSACTION_FEE).toFixed(2)} // Cap at balance minus fee
+            min={TRANSACTION_FEE.toFixed(2)}
+            max={(balance - TRANSACTION_FEE).toFixed(2)}
             step="0.01"
             aria-label="Withdrawal amount"
             disabled={isProcessing}
@@ -112,10 +150,10 @@ function Payout() {
         <button
           className="proceed-button"
           onClick={handleProceedClick}
-          disabled={isProcessing || withdrawalError || !withdrawalAmount}
+          disabled={isProcessing || withdrawalError || !withdrawalAmount || !activeAccount}
           aria-label="Proceed with payout"
         >
-          {isProcessing ? <FaSpinner className="spinner" /> : 'Proceed'}
+          {isProcessing ? <FaSpinner className="spinner" /> : 'Continue'}
         </button>
       </div>
     </div>

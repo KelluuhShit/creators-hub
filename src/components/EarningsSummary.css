@@ -1,0 +1,362 @@
+/* src/pages/EarningsSummary.css */
+.earnings-summary-container {
+  max-width: 1200px;
+  width: 90%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-sizing: border-box;
+  min-height: calc(100vh - 40px);
+}
+
+.earnings-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.earnings-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.back-button {
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.back-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+.payout-section {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.payout-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 10px;
+}
+
+.payout-amount {
+  margin-bottom: 20px;
+}
+
+.payout-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #833ab4;
+}
+
+.withdraw-button {
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 30px;
+  font-size: 1.125rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.withdraw-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+.active-account-card {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-top: 15px;
+}
+
+.bank-icon {
+  margin-right: 15px;
+}
+
+.bank-details {
+  flex-grow: 1;
+}
+
+.bank-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.account-number {
+  font-size: 0.875rem;
+  color: #555;
+  font-family: monospace;
+}
+
+.change-button {
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.change-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+.history-section {
+  margin-bottom: 20px;
+}
+
+.history-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 20px;
+}
+
+.history-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.history-card {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.history-card.earned .history-type {
+  color: #28a745;
+}
+
+.history-card.withdrawn .history-type {
+  color: #dc3545;
+}
+
+.history-icon {
+  margin-right: 15px;
+}
+
+.history-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.history-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-type {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.history-amount {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #833ab4;
+}
+
+.history-account-container {
+  display: flex;
+  align-items: center;
+}
+
+.history-account {
+  font-size: 0.875rem;
+  color: #555;
+  font-family: monospace;
+}
+
+/* Mobile devices (up to 480px) */
+@media (max-width: 480px) {
+  .earnings-summary-container {
+    width: 95%;
+    padding: 15px;
+    margin: 10px auto;
+  }
+
+  .earnings-title {
+    font-size: 1.25rem;
+  }
+
+  .back-button {
+    padding: 8px 15px;
+    font-size: 0.875rem;
+  }
+
+  .payout-title {
+    font-size: 1.125rem;
+  }
+
+  .payout-value {
+    font-size: 1.5rem;
+  }
+
+  .withdraw-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+
+  .active-account-card {
+    padding: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .bank-name {
+    font-size: 1rem;
+  }
+
+  .account-number {
+    font-size: 0.75rem;
+  }
+
+  .change-button {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+
+  .history-title {
+    font-size: 1.125rem;
+  }
+
+  .history-card {
+    padding: 10px;
+  }
+
+  .history-icon {
+    margin-right: 10px;
+  }
+
+  .history-type {
+    font-size: 0.875rem;
+  }
+
+  .history-amount {
+    font-size: 1rem;
+  }
+
+  .history-account {
+    font-size: 0.75rem;
+  }
+
+  .history-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .history-account-container {
+    align-self: flex-end;
+  }
+}
+
+/* Tablet devices (481px to 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .earnings-summary-container {
+    width: 90%;
+    padding: 18px;
+  }
+
+  .earnings-title {
+    font-size: 1.375rem;
+  }
+
+  .back-button {
+    padding: 9px 18px;
+    font-size: 0.9375rem;
+  }
+
+  .payout-title {
+    font-size: 1.1875rem;
+  }
+
+  .payout-value {
+    font-size: 1.75rem;
+  }
+
+  .withdraw-button {
+    padding: 11px 25px;
+    font-size: 1.0625rem;
+  }
+
+  .active-account-card {
+    padding: 12px;
+  }
+
+  .bank-name {
+    font-size: 1.0625rem;
+  }
+
+  .account-number {
+    font-size: 0.8125rem;
+  }
+
+  .change-button {
+    padding: 7px 13px;
+    font-size: 0.8125rem;
+  }
+
+  .history-title {
+    font-size: 1.1875rem;
+  }
+
+  .history-card {
+    padding: 12px;
+  }
+
+  .history-icon {
+    margin-right: 12px;
+  }
+
+  .history-type {
+    font-size: 0.9375rem;
+  }
+
+  .history-amount {
+    font-size: 1.0625rem;
+  }
+
+  .history-account {
+    font-size: 0.8125rem;
+  }
+}

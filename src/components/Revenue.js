@@ -106,7 +106,7 @@ function Revenue() {
   const handleBackClick = () => navigate('/monitor');
 
   const handlePayoutClick = () => {
-    navigate('/payout', { state: { balance: currentBalance } });
+    navigate('/earnings-summary', { state: { balance: currentBalance } });
   };
 
   return (

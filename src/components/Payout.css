@@ -61,7 +61,54 @@
   font-weight: bold;
   color: #833AB4;
   text-align: center;
+  margin-bottom: 10px; /* Reduced to fit active account card */
+}
+
+.active-account-card {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
+}
+
+.bank-icon {
+  margin-right: 15px;
+}
+
+.bank-details {
+  flex-grow: 1;
+}
+
+.bank-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.account-number {
+  font-size: 0.875rem;
+  color: #555;
+  font-family: monospace;
+}
+
+.change-button {
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 15px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.change-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
 }
 
 .payout-details {
@@ -226,6 +273,26 @@
     font-size: 1.5rem;
   }
 
+  .active-account-card {
+    padding: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .bank-name {
+    font-size: 1rem;
+  }
+
+  .account-number {
+    font-size: 0.75rem;
+  }
+
+  .change-button {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+
   .payout-detail-item {
     font-size: 0.875rem;
   }
@@ -294,6 +361,23 @@
     font-size: 1.625rem;
   }
 
+  .active-account-card {
+    padding: 12px;
+  }
+
+  .bank-name {
+    font-size: 1.0625rem;
+  }
+
+  .account-number {
+    font-size: 0.8125rem;
+  }
+
+  .change-button {
+    padding: 7px 13px;
+    font-size: 0.8125rem;
+  }
+
   .payout-detail-item {
     font-size: 0.9375rem;
   }
@@ -329,7 +413,7 @@
   }
 
   .proceed-button {
-    padding: 9px 18px;
+    padding: 9px;
     font-size: 0.9375rem;
   }
 

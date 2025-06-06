@@ -1,0 +1,379 @@
+/* src/pages/ChooseAccount.css */
+.choose-account-container {
+  max-width: 1200px;
+  width: 90%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-sizing: border-box;
+  min-height: calc(100vh - 40px);
+}
+
+.choose-account-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.choose-account-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.back-button {
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.back-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+.active-account-section {
+  margin-bottom: 20px;
+}
+
+.active-account-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 15px;
+}
+
+.active-account-card {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.bank-icon {
+  margin-right: 15px;
+}
+
+.bank-details {
+  flex-grow: 1;
+}
+
+.bank-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.account-number {
+  font-size: 0.875rem;
+  color: #555;
+  font-family: monospace;
+}
+
+.change-button {
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.change-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+.withdrawal-account-section {
+  margin-bottom: 20px;
+}
+
+.withdrawal-account-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 15px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.search-input {
+  flex-grow: 1;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.search-input:focus {
+  border-color: #833ab4;
+}
+
+.search-button {
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.search-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+.suggestions-list {
+  max-height: 200px;
+  overflow-y: auto;
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+  padding: 10px;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.suggestion-item:hover {
+  background: #e0e0e0;
+}
+
+.suggestion-item.no-results {
+  cursor: default;
+  color: #555;
+}
+
+.default-banks-section {
+  margin-bottom: 20px;
+}
+
+.default-banks-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 15px;
+}
+
+.bank-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.bank-card {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
+
+.bank-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.bank-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.add-button {
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.add-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+/* Mobile devices (up to 480px) */
+@media (max-width: 480px) {
+  .choose-account-container {
+    width: 95%;
+    padding: 15px;
+    margin: 10px auto;
+  }
+
+  .choose-account-title {
+    font-size: 1.25rem;
+  }
+
+  .back-button {
+    padding: 8px 15px;
+    font-size: 0.875rem;
+  }
+
+  .active-account-title {
+    font-size: 1.125rem;
+  }
+
+  .active-account-card {
+    padding: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .bank-name {
+    font-size: 1rem;
+  }
+
+  .account-number {
+    font-size: 0.75rem;
+  }
+
+  .change-button {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+
+  .withdrawal-account-title {
+    font-size: 1.125rem;
+  }
+
+  .search-input {
+    font-size: 0.875rem;
+    padding: 8px;
+  }
+
+  .search-button {
+    padding: 8px;
+  }
+
+  .suggestions-list {
+    max-height: 150px;
+  }
+
+  .suggestion-item {
+    font-size: 0.875rem;
+    padding: 8px;
+  }
+
+  .default-banks-title {
+    font-size: 1.125rem;
+  }
+
+  .bank-card {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .add-button {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+}
+
+/* Tablet devices (481px to 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .choose-account-container {
+    width: 90%;
+    padding: 18px;
+  }
+
+  .choose-account-title {
+    font-size: 1.375rem;
+  }
+
+  .back-button {
+    padding: 9px 18px;
+    font-size: 0.9375rem;
+  }
+
+  .active-account-title {
+    font-size: 1.1875rem;
+  }
+
+  .active-account-card {
+    padding: 12px;
+  }
+
+  .bank-name {
+    font-size: 1.0625rem;
+  }
+
+  .account-number {
+    font-size: 0.8125rem;
+  }
+
+  .change-button {
+    padding: 7px 13px;
+    font-size: 0.8125rem;
+  }
+
+  .withdrawal-account-title {
+    font-size: 1.1875rem;
+  }
+
+  .search-input {
+    font-size: 0.9375rem;
+    padding: 9px;
+  }
+
+  .search-button {
+    padding: 9px;
+  }
+
+  .suggestion-item {
+    font-size: 0.9375rem;
+    padding: 9px;
+  }
+
+  .default-banks-title {
+    font-size: 1.1875rem;
+  }
+
+  .bank-card {
+    width: 280px;
+    padding: 12px;
+  }
+
+  .add-button {
+    padding: 7px 13px;
+    font-size: 0.8125rem;
+  }
+}
