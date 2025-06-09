@@ -36,6 +36,8 @@ function Revenue() {
       borderColor,
       backgroundColor,
       borderWidth: 1,
+      borderRadius: 3,
+      barThickness: 20,
     }],
   });
 

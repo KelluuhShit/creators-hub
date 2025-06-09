@@ -36,7 +36,8 @@ function Monitor() {
       borderColor,
       backgroundColor,
       borderWidth: 1,
-      borderRadius: 5, // Add border radius to round bar corners
+      borderRadius: 3,
+      barThickness: 20, // Narrow bars
     }],
   });
 
@@ -56,33 +57,26 @@ function Monitor() {
 
   // Compute card metrics
   const getCardMetrics = (data, title) => {
-    const sum = data.reduce((acc, val) => acc + val, 0);
-    const avg = sum / data.length;
-    const first = data[0];
-    const last = data[data.length - 1];
+    const sum = data.reduce((acc, val) => acc + val, 0); // Total count
+    const first = data[0] || 0; // Default to 0 if no data
+    const last = data[data.length - 1] || 0; // Default to 0 if no data
+    const percentageChange = first !== 0 ? ((last - first) / first * 100).toFixed(1) : 0; // Percentage change
     let trend, trendIcon, trendColor;
     if (last > first * 1.05) {
       trend = 'Up';
       trendIcon = <IoArrowUp />;
-      trendColor = '#28a745';
+      trendColor = '#28a745'; // Green
     } else if (last < first * 0.95) {
       trend = 'Down';
       trendIcon = <IoArrowDown />;
-      trendColor = '#dc3545';
+      trendColor = '#dc3545'; // Red
     } else {
       trend = 'Stable';
       trendIcon = <IoRemove />;
-      trendColor = '#ffc107';
+      trendColor = '#ffc107'; // Yellow
     }
-    let value;
-    if (title === 'Likes' || title === 'Views' || title === 'Promoted Views') {
-      value = `${Math.round(sum).toLocaleString()} Total`;
-    } else if (title === 'Posts') {
-      value = `${Math.round(sum)} Posts`;
-    } else {
-      value = `${Math.round(avg)}% Average`;
-    }
-    return { value, trend, trendIcon, trendColor };
+    const value = Math.round(sum).toLocaleString(); // Format total count
+    return { value, trend, trendIcon, trendColor, percentageChange }; // Include trend
   };
 
   // Mock descriptions for each metric
@@ -90,7 +84,7 @@ function Monitor() {
     const descriptions = {
       'Likes Chart': 'Total Likes measures user engagement through positive interactions with your content over the selected time period.',
       'Promoted Views Chart': 'Promoted Views tracks the number of views driven by paid promotions, reflecting the effectiveness of your advertising efforts.',
-      'Consistency Chart': 'Consistency represents the regularity of your content performance, calculated as a percentage of expected activity.',
+      'Consistency Chart': 'Consistency represents the total activity level of your content performance over the selected time period.',
       'Posts Chart': 'Posts counts the number of content items published, indicating your content creation activity.',
       'Views Chart': 'Total Views measures the overall reach of your content, including both organic and promoted views.',
     };
@@ -214,7 +208,7 @@ function Monitor() {
           </div>
           <div className="card-grid">
             {charts.map((chart, index) => {
-              const { value, trendIcon, trendColor } = getCardMetrics(chart.data.datasets[0].data, chart.title);
+              const { value, trend, trendIcon, trendColor, percentageChange } = getCardMetrics(chart.data.datasets[0].data, chart.title);
               return (
                 <div key={index} className="monitor-card" style={{ borderLeft: `4px solid ${chart.color}` }}>
                   <div className="monitor-card-header">
@@ -227,10 +221,13 @@ function Monitor() {
                       <IoInformationCircleOutline />
                     </button>
                   </div>
-                  <p className="monitor-card-value">{value}</p>
-                  <span className="monitor-card-trend" style={{ color: trendColor }}>
-                    {trendIcon}
-                  </span>
+                  <div className="monitor-card-metrics" aria-label={`${value} total, ${trend} trend, ${percentageChange}% change`}>
+                    <span className="monitor-card-value">{value}</span>
+                    <span className="monitor-card-trend" style={{ color: trendColor }}>
+                      {trendIcon}
+                    </span>
+                    <span className="monitor-card-percentage">{percentageChange}%</span>
+                  </div>
                 </div>
               );
             })}

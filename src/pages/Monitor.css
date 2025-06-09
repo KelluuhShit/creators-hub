@@ -75,6 +75,7 @@
   overflow-x: auto;
   margin-bottom: 20px;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
 
 .chart-row {
@@ -86,7 +87,7 @@
 
 .chart-container {
   flex: 0 0 auto;
-  min-width: 280px;
+  min-width: 220px; /* Reduced to complement narrower bars */
   background: #f9f9f9;
   border-radius: 10px;
   padding: 10px;
@@ -96,7 +97,6 @@
 
 .chart-wrapper {
   height: 200px;
-  
 }
 
 .chart-title {
@@ -119,6 +119,7 @@
   padding: 15px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s;
+  border-radius: 10px;
 }
 
 .monitor-card:hover {
@@ -129,27 +130,37 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 10px; /* Increased for spacing */
 }
 
 .monitor-card-title {
   font-size: 1.125rem;
   font-weight: 600;
-  margin-bottom: 5px;
   color: #333;
+}
+
+.monitor-card-metrics {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between count, icon, and percentage */
 }
 
 .monitor-card-value {
   font-size: 1.375rem;
   color: #833ab4;
-  margin-bottom: 5px;
+  font-weight: 600;
 }
 
 .monitor-card-trend {
   font-size: 1rem;
   display: flex;
   align-items: center;
-  gap: 5px;
+}
+
+.monitor-card-percentage {
+  font-size: 1.125rem;
+  color: #555;
+  font-weight: 500;
 }
 
 .info-icon {
@@ -267,7 +278,7 @@
 
 .skeleton-chart {
   flex: 0 0 auto;
-  width: 250px;
+  width: 220px; /* Match chart-container */
   height: 200px;
   background: #e0e0e0;
   border-radius: 10px;
@@ -338,7 +349,7 @@
   }
 
   .chart-container {
-    width: 200px;
+    min-width: 180px; /* Further reduced for mobile */
   }
 
   .chart-wrapper {
@@ -363,8 +374,16 @@
     padding: 10px;
   }
 
+  .monitor-card-header {
+    margin-bottom: 8px;
+  }
+
   .monitor-card-title {
     font-size: 1rem;
+  }
+
+  .monitor-card-metrics {
+    gap: 6px;
   }
 
   .monitor-card-value {
@@ -372,6 +391,10 @@
   }
 
   .monitor-card-trend {
+    font-size: 0.875rem;
+  }
+
+  .monitor-card-percentage {
     font-size: 0.875rem;
   }
 
@@ -413,7 +436,7 @@
   }
 
   .skeleton-chart {
-    width: 200px;
+    width: 180px; /* Match chart-container */
     height: 150px;
   }
 
@@ -444,7 +467,7 @@
   }
 
   .chart-container {
-    width: 220px;
+    min-width: 200px; /* Adjusted for tablet */
   }
 
   .chart-wrapper {
@@ -465,8 +488,20 @@
     grid-template-rows: auto;
   }
 
+  .monitor-card {
+    padding: 12px;
+  }
+
+  .monitor-card-header {
+    margin-bottom: 9px;
+  }
+
   .monitor-card-title {
     font-size: 1.0625rem;
+  }
+
+  .monitor-card-metrics {
+    gap: 7px;
   }
 
   .monitor-card-value {
@@ -475,6 +510,10 @@
 
   .monitor-card-trend {
     font-size: 0.9375rem;
+  }
+
+  .monitor-card-percentage {
+    font-size: 1rem;
   }
 
   .info-icon {
@@ -510,7 +549,7 @@
   }
 
   .skeleton-chart {
-    width: 220px;
+    width: 200px; /* Match chart-container */
     height: 180px;
   }
 
