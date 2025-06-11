@@ -1,0 +1,157 @@
+/* src/subscribe/free/SubscriptionModal.css */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideIn 0.3s ease-out;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: color 0.3s;
+}
+
+.modal-close-button:hover {
+  color: #833ab4;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.modal-description {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.5;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.modal-cancel-button {
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.modal-cancel-button:hover {
+  background: #e0e0e0;
+  transform: scale(1.05);
+}
+
+.modal-subscribe-button {
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.modal-subscribe-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Mobile (≤480px) */
+@media (max-width: 480px) {
+  .modal-content {
+    width: 85%;
+    padding: 15px;
+  }
+
+  .modal-title {
+    font-size: 1.25rem;
+  }
+
+  .modal-description {
+    font-size: 0.875rem;
+  }
+
+  .modal-cancel-button,
+  .modal-subscribe-button {
+    padding: 8px 15px;
+    font-size: 0.875rem;
+  }
+
+  .modal-close-button {
+    font-size: 1.25rem;
+    top: 10px;
+    right: 10px;
+  }
+}
+
+/* Tablet (481–768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .modal-content {
+    width: 90%;
+    padding: 18px;
+  }
+
+  .modal-title {
+    font-size: 1.375rem;
+  }
+
+  .modal-description {
+    font-size: 0.9375rem;
+  }
+
+  .modal-close-button {
+    font-size: 1.375rem;
+    top: 12px;
+    right: 12px;
+  }
+}

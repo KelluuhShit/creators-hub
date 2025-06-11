@@ -9,7 +9,7 @@ import ChooseAccount from './components/ChooseAccount';
 import AccountSelections from './components/AccountSelections';
 import ConfirmWithdraw from './components/ConfirmWithdraw'
 import Create from './pages/Create';
-import Monitor from './pages/Monitor';
+import FreeAnalytics from './pages/FreeAnalytics';
 import Profile from './pages/Profile';
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Create />} />
           <Route path="/revenue" element={<Revenue />} />
-          <Route path="/monitor" element={<Monitor />} />
+          <Route path="/free-analytics" element={<FreeAnalytics />} />
           <Route path="/earnings-summary" element={<EarningsSummary />} />
           <Route path="/choose-account" element={<ChooseAccount />} />
           <Route path="/account-selections" element={<AccountSelections />} />

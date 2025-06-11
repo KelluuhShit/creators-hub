@@ -12,7 +12,7 @@ function Navbar() {
           <span>Create</span>
         </div>
       </NavLink>
-      <NavLink to="/monitor" className="nav-item" activeClassName="active">
+      <NavLink to="/free-analytics" className="nav-item" activeClassName="active">
         <div className="nav-content">
           <IoStatsChartOutline size={24} />
           <span>Analytics</span>
