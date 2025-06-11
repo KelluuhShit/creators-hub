@@ -8,6 +8,9 @@ import Success from './components/Success';
 import ChooseAccount from './components/ChooseAccount';
 import AccountSelections from './components/AccountSelections';
 import ConfirmWithdraw from './components/ConfirmWithdraw'
+import Subscribe from './subscribe/Subscribe';
+import Monitor from './subscribe/premium/Monitor';
+import ActivityChartModal from './subscribe/free/ActivityChartModal';
 import Create from './pages/Create';
 import FreeAnalytics from './pages/FreeAnalytics';
 import Profile from './pages/Profile';
@@ -24,6 +27,9 @@ function App() {
           <Route path="/choose-account" element={<ChooseAccount />} />
           <Route path="/account-selections" element={<AccountSelections />} />
           <Route path="/confirm-withdraw" element={<ConfirmWithdraw />} />
+          <Route path="/subscribe" element={<Subscribe />} />
+          <Route path="/premium-analytics" element={<Monitor />} />
+          <Route path="/activity-chart" element={<ActivityChartModal />} />
           <Route path="/payout" element={<Payout />} />
           <Route path="/success" element={<Success />} />
           <Route path="/profile" element={<Profile />} />

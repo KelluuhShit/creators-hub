@@ -1,13 +1,19 @@
-// src/subscribe/free/FreeAnalytics.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoArrowBack, IoArrowForward, IoEyeOutline, IoHeartOutline, IoPeopleOutline } from 'react-icons/io5';
 import SubscriptionModal from '../components/SubscriptionModal';
+import ActivityChartModal from '../subscribe/free/ActivityChartModal';
 import './FreeAnalytics.css';
 
 function FreeAnalytics() {
   const navigate = useNavigate();
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false); // SubscriptionModal
+  const [isChartModalOpen, setChartModalOpen] = useState(false); // ActivityChartModal
+  const [selectedActivity, setSelectedActivity] = useState(null); // Track selected activity
+
+  // Check if user is premium from localStorage
+  const userSubscription = JSON.parse(localStorage.getItem('userSubscription') || '{}');
+  const isPremium = userSubscription?.premium === true;
 
   const analyticsData = {
     views: 1830,
@@ -23,19 +29,33 @@ function FreeAnalytics() {
   ];
 
   const handleBack = () => {
-    navigate('/free-analytics'); // Navigate back to the Free Analytics page
+    navigate(-1);
   };
 
   const handleAdvancedStats = () => {
-    setModalOpen(true);
+    if (isPremium) {
+      navigate('/premium-analytics');
+    } else {
+      setModalOpen(true);
+    }
   };
 
-  const handleDetails = () => {
-    setModalOpen(true); // Open modal instead of navigating to /details/:id
+  const handleDetails = (activity) => {
+    if (isPremium) {
+      setSelectedActivity(activity);
+      setChartModalOpen(true);
+    } else {
+      setModalOpen(true);
+    }
   };
 
   const handleModalClose = () => {
     setModalOpen(false);
+  };
+
+  const handleChartModalClose = () => {
+    setChartModalOpen(false);
+    setSelectedActivity(null);
   };
 
   return (
@@ -88,7 +108,7 @@ function FreeAnalytics() {
             <span className="table-column details-column">
               <button
                 className="details-button"
-                onClick={handleDetails} // Updated to open modal
+                onClick={() => handleDetails(item.activity)}
                 aria-label={`View premium details for ${item.activity}`}
               >
                 <IoArrowForward />
@@ -99,6 +119,11 @@ function FreeAnalytics() {
       </div>
 
       <SubscriptionModal isOpen={isModalOpen} onClose={handleModalClose} />
+      <ActivityChartModal
+        isOpen={isChartModalOpen}
+        onClose={handleChartModalClose}
+        activity={selectedActivity}
+      />
     </div>
   );
 }

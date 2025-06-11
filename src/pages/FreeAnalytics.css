@@ -151,7 +151,7 @@
 
   .button-group {
     flex-direction: row;
-    justify-content: flex-end; /* Keep space-around */
+    justify-content: flex-end;
     width: 100%;
   }
 
