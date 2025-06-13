@@ -1,4 +1,3 @@
-/* src/components/Navbar.css */
 .navbar {
   position: fixed;
   bottom: 0;
@@ -11,7 +10,7 @@
   padding: 10px 0;
   height: 60px;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-  z-index: 1000; /* Ensure navbar stays above other content */
+  z-index: 1000;
 }
 
 .nav-item {
@@ -39,50 +38,48 @@
 
 .nav-item.active .nav-content {
   background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
-  border-radius: 20px; /* Rounded pill shape */
-  color: #fff; /* White text/icon for contrast */
+  border-radius: 20px;
+  color: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  transform: scale(1.05); /* Slight scale for emphasis */
+  transform: scale(1.05);
   padding: 5px 20px;
 }
 
 .nav-item:hover .nav-content {
-  transform: scale(1.05); /* Hover scale effect */
+  transform: scale(1.05);
   transition: transform 0.3s;
 }
 
 .nav-item.active svg,
 .nav-item.active span {
-  color: #fff; /* Ensure icon and text are white when active */
+  color: #fff;
 }
 
-/* Mobile devices (up to 480px) */
 @media (max-width: 480px) {
   .navbar {
-    height: 50px; /* Smaller height */
+    height: 50px;
     padding: 8px 0;
   }
 
   .nav-item {
-    font-size: 10px; /* Smaller text */
+    font-size: 10px;
   }
 
   .nav-content {
-    padding: 6px 8px; /* Smaller padding */
+    padding: 6px 8px;
   }
 
   .nav-item svg {
-    width: 20px; /* Smaller icons */
+    width: 20px;
     height: 20px;
   }
 
   .nav-item.active .nav-content {
-    border-radius: 16px; /* Slightly smaller radius */
-    transform: scale(1.03); /* Reduced scale for mobile */
+    border-radius: 16px;
+    transform: scale(1.03);
   }
 }
 
-/* Tablet devices (481px to 768px) */
 @media (min-width: 481px) and (max-width: 768px) {
   .navbar {
     height: 55px;
@@ -97,12 +94,11 @@
   }
 
   .nav-item.active .nav-content {
-    border-radius: 18px; /* Medium radius */
+    border-radius: 18px;
     transform: scale(1.04);
   }
 }
 
-/* Larger screens (above 768px) */
 @media (min-width: 769px) {
   .nav-content {
     padding: 8px 12px;

@@ -1,0 +1,342 @@
+.landing-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  color: #333;
+  font-family: 'Inter', sans-serif;
+  width: 100%; /* Prevent overflow */
+  box-sizing: border-box; /* Ensure padding/margins are included */
+}
+
+.landing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: clamp(12px, 2.5vw, 20px) clamp(16px, 4vw, 40px);
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 900;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo img {
+  width: clamp(28px, 4.5vw, 40px);
+  height: clamp(28px, 4.5vw, 40px);
+  object-fit: contain;
+}
+
+.logo h1 {
+  font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+  color: #833AB4;
+  font-weight: 700;
+}
+
+.landing-nav {
+  display: flex;
+  gap: 10px;
+}
+
+.nav-button {
+  padding: clamp(6px, 1.5vw, 10px) clamp(12px, 2.5vw, 20px);
+  border-radius: 6px;
+  font-size: clamp(0.8rem, 1.8vw, 1rem);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  font-weight: 500;
+  white-space: nowrap; /* Prevent button text wrapping */
+}
+
+.nav-button:focus {
+  outline: 2px solid #833AB4;
+  outline-offset: 2px;
+}
+
+.nav-button.signin {
+  background: transparent;
+  border: 1.5px solid #833AB4;
+  color: #833AB4;
+}
+
+.nav-button.signin:hover,
+.nav-button.signin:focus {
+  background: #833AB4;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.nav-button.signup {
+  background: #833AB4;
+  border: none;
+  color: #fff;
+}
+
+.nav-button.signup:hover,
+.nav-button.signup:focus {
+  background: #6A1B9A;
+  transform: translateY(-2px);
+}
+
+.hero-section {
+  text-align: center;
+  padding: clamp(40px, 8vw, 80px) clamp(12px, 2.5vw, 20px);
+  background: linear-gradient(135deg, #833AB4, #fd1d1d, #fcaf45);
+  color: #fff;
+}
+
+.hero-section h2 {
+  font-size: clamp(1.6rem, 4.5vw, 2.75rem);
+  font-weight: 800;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.hero-section p {
+  font-size: clamp(0.9rem, 2.2vw, 1.25rem);
+  max-width: clamp(300px, 80vw, 600px); /* Adaptive max-width */
+  margin: 0 auto 28px;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.cta-button {
+  background: #fff;
+  color: #833AB4;
+  padding: clamp(8px, 1.8vw, 12px) clamp(20px, 3.5vw, 32px);
+  border: none;
+  border-radius: 6px;
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.cta-button:hover,
+.cta-button:focus {
+  background: #fcaf45;
+  color: #333;
+  transform: translateY(-2px);
+}
+
+.cta-button:focus {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.features-section {
+  padding: clamp(32px, 6vw, 60px) clamp(12px, 2.5vw, 20px);
+  text-align: center;
+  background: #fafafa;
+}
+
+.features-section h3 {
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-weight: 700;
+  margin-bottom: 32px;
+  color: #333;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(220px, 30vw, 260px), 1fr));
+  gap: clamp(16px, 2vw, 24px);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  background: #fff;
+  padding: clamp(16px, 2.5vw, 24px);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.feature-card h4 {
+  font-size: clamp(1.1rem, 2.2vw, 1.3rem);
+  color: #833AB4;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.feature-card p {
+  font-size: clamp(0.85rem, 1.8vw, 1rem);
+  color: #555;
+  line-height: 1.5;
+}
+
+.landing-footer {
+  text-align: center;
+  padding: clamp(12px, 2.5vw, 20px);
+  background: #2c2c2c;
+  color: #fff;
+  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+}
+
+/* Extra Small Mobile (≤360px) */
+@media (max-width: 360px) {
+  .landing-header {
+    flex-direction: column;
+    gap: 12px;
+    padding: 8px 12px;
+  }
+
+  .landing-nav {
+    gap: 6px;
+    flex-wrap: wrap; /* Allow buttons to wrap if needed */
+    justify-content: center;
+  }
+
+  .nav-button {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .hero-section {
+    padding: 32px 12px;
+  }
+
+  .hero-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .hero-section p {
+    font-size: 0.85rem;
+  }
+
+  .cta-button {
+    padding: 8px 20px;
+    font-size: 0.9rem;
+  }
+
+  .features-section {
+    padding: 24px 12px;
+  }
+
+  .features-grid {
+    gap: 12px;
+    grid-template-columns: 1fr; /* Force single column */
+  }
+
+  .feature-card {
+    padding: 12px;
+  }
+}
+
+/* Small Mobile (361–480px) */
+@media (min-width: 361px) and (max-width: 480px) {
+  .landing-header {
+    flex-direction: column;
+    gap: 14px;
+    padding: 10px 14px;
+  }
+
+  .landing-nav {
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .nav-button {
+    padding: 7px 14px;
+    font-size: 0.85rem;
+  }
+
+  .hero-section {
+    padding: 36px 14px;
+  }
+
+  .hero-section h2 {
+    font-size: 1.65rem;
+  }
+
+  .hero-section p {
+    font-size: 0.9rem;
+  }
+
+  .cta-button {
+    padding: 9px 22px;
+    font-size: 0.95rem;
+  }
+
+  .features-section {
+    padding: 28px 14px;
+  }
+
+  .features-grid {
+    gap: 14px;
+  }
+
+  .feature-card {
+    padding: 14px;
+  }
+}
+
+/* Tablets (481–768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .landing-header {
+    flex-direction: column;
+    gap: 16px;
+    padding: 12px 20px;
+  }
+
+  .landing-nav {
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .hero-section {
+    padding: 40px 16px;
+  }
+
+  .hero-section h2 {
+    font-size: 1.8rem;
+  }
+
+  .hero-section p {
+    font-size: 0.95rem;
+  }
+
+  .features-section {
+    padding: 32px 16px;
+  }
+
+  .features-grid {
+    gap: 18px;
+  }
+}
+
+/* Larger Tablets and Small Desktops (769–1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .landing-header {
+    padding: 16px 32px;
+  }
+
+  .hero-section {
+    padding: 48px 24px;
+  }
+
+  .features-grid {
+    gap: 20px;
+  }
+}
+
+/* Desktops (>1024px) */
+@media (min-width: 1025px) {
+  .landing-header {
+    padding: 20px 40px;
+  }
+
+  .features-grid {
+    gap: 24px;
+  }
+}
