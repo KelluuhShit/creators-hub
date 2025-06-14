@@ -34,7 +34,7 @@ function FreeAnalytics() {
 
   const handleAdvancedStats = () => {
     if (isPremium) {
-      navigate('/premium-analytics');
+      navigate('/monitor');
     } else {
       setModalOpen(true);
     }
