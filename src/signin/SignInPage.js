@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, googleProvider } from '../services/firebase';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebookF, FaApple } from 'react-icons/fa';
 import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
@@ -15,6 +15,9 @@ function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [acceptPrivacy, setAcceptPrivacy] = useState(false);
   const [error, setError] = useState('');
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetMessage, setResetMessage] = useState('');
 
   const handleEmailSignIn = async (e) => {
     e.preventDefault();
@@ -80,84 +83,139 @@ function SignInPage() {
     }
   };
 
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setResetMessage('');
+    setError('');
+    try {
+      await sendPasswordResetEmail(auth, resetEmail);
+      setResetMessage('Password reset email sent. Check your inbox.');
+      setResetEmail('');
+    } catch (error) {
+      console.error('Password Reset error:', error.message, error.code);
+      switch (error.code) {
+        case 'auth/invalid-email':
+          setError('Invalid email address.');
+          break;
+        case 'auth/user-not-found':
+          setError('No account found with this email.');
+          break;
+        default:
+          setError('Failed to send reset email. Please try again.');
+      }
+    }
+  };
+
   return (
     <div className="signin-container">
       <section className="signin-section">
-        <h2>Welcome Back to Creator's Hub</h2>
-        <p>Sign in to manage your content and grow your audience.</p>
+        <h2>{isForgotPassword ? 'Reset Your Password' : 'Welcome Back to Creator\'s Hub'}</h2>
+        <p>{isForgotPassword ? 'Enter your email to receive a password reset link.' : 'Sign in to manage your content and grow your audience.'}</p>
         {error && <p className="error-message" aria-live="polite">{error}</p>}
+        {resetMessage && <p className="success-message" aria-live="polite">{resetMessage}</p>}
         <div className="signin-form">
-          <form onSubmit={handleEmailSignIn}>
-            <div className="input-group">
-              <label>
-                <span className="icon"><FiMail /></span> Email
-              </label>
-              <input
-                type="email"
-                placeholder="Your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                aria-describedby={error ? 'email-error' : undefined}
-              />
-            </div>
-            <div className="input-group">
-              <label>
-                <span className="icon"><FiLock /></span> Password
-              </label>
-              <div className="input-wrapper">
+          {isForgotPassword ? (
+            <form onSubmit={handleForgotPassword}>
+              <div className="input-group">
+                <label>
+                  <span className="icon"><FiMail /></span> Email
+                </label>
                 <input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  type="email"
+                  placeholder="Your email"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  required
+                  aria-describedby={error ? 'email-error' : undefined}
+                />
+              </div>
+              <button type="submit" className="signin-button">
+                Send Reset Link
+              </button>
+              <p className="back-link">
+                <span onClick={() => setIsForgotPassword(false)}>Back to Sign In</span>
+              </p>
+            </form>
+          ) : (
+            <form onSubmit={handleEmailSignIn}>
+              <div className="input-group">
+                <label>
+                  <span className="icon"><FiMail /></span> Email
+                </label>
+                <input
+                  type="email"
+                  placeholder="Your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  aria-describedby={error ? 'email-error' : undefined}
+                />
+              </div>
+              <div className="input-group">
+                <label>
+                  <span className="icon"><FiLock /></span> Password
+                </label>
+                <div className="input-wrapper">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="toggle-visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <FiEyeOff /> : <FiEye />}
+                  </button>
+                </div>
+              </div>
+              <p className="forgot-password">
+                <span onClick={() => setIsForgotPassword(true)}>Forgot Password?</span>
+              </p>
+              <div className="terms-checkbox">
+                <input
+                  type="checkbox"
+                  id="accept-privacy"
+                  checked={acceptPrivacy}
+                  onChange={(e) => setAcceptPrivacy(e.target.checked)}
                   required
                 />
-                <button
-                  type="button"
-                  className="toggle-visibility"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                <label htmlFor="accept-privacy">
+                  I accept the <a href="/terms" target="_blank">terms</a> and{' '}
+                  <a href="/privacy" target="_blank">privacy policy</a>
+                </label>
+              </div>
+              <button type="submit" className="signin-button">
+                Sign In
+              </button>
+            </form>
+          )}
+        </div>
+        {!isForgotPassword && (
+          <>
+            <div className="social-login">
+              <span>Or sign in with</span>
+              <div className="social-buttons">
+                <button className="social-button" disabled>
+                  <FaFacebookF /> Facebook
+                </button>
+                <button className="social-button" onClick={handleGoogleSignIn}>
+                  <FcGoogle /> Google
+                </button>
+                <button className="social-button" disabled>
+                  <FaApple /> Apple
                 </button>
               </div>
             </div>
-            <div className="terms-checkbox">
-              <input
-                type="checkbox"
-                id="accept-privacy"
-                checked={acceptPrivacy}
-                onChange={(e) => setAcceptPrivacy(e.target.checked)}
-                required
-              />
-              <label htmlFor="accept-privacy">
-                I accept the <a href="/terms" target="_blank">terms</a> and{' '}
-                <a href="/privacy" target="_blank">privacy policy</a>
-              </label>
-            </div>
-            <button type="submit" className="signin-button">
-              Sign In
-            </button>
-          </form>
-        </div>
-        <div className="social-login">
-          <span>Or sign in with</span>
-          <div className="social-buttons">
-            <button className="social-button" disabled>
-              <FaFacebookF /> Facebook
-            </button>
-            <button className="social-button" onClick={handleGoogleSignIn}>
-              <FcGoogle /> Google
-            </button>
-            <button className="social-button" disabled>
-              <FaApple /> Apple
-            </button>
-          </div>
-        </div>
-        <p className="signup-link">
-          Don’t have an account? <span onClick={() => navigate('/signup')}>Sign Up</span>
-        </p>
+            <p className="signup-link">
+              Don’t have an account? <span onClick={() => navigate('/signup')}>Sign Up</span>
+            </p>
+          </>
+        )}
       </section>
     </div>
   );
