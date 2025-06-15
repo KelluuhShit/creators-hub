@@ -72,15 +72,15 @@ function App() {
         <Route element={<Layout user={user} />}>
           <Route
             path="/"
-            element={user ? <Navigate to="/subscribe" /> : <LandingPage />}
+            element={user ? <Navigate to="/create" /> : <LandingPage />}
           />
           <Route
             path="/signin"
-            element={user ? <Navigate to="/subscribe" /> : <SignInPage />}
+            element={user ? <Navigate to="/create" /> : <SignInPage />}
           />
           <Route
             path="/signup"
-            element={user ? <Navigate to="/subscribe" /> : <SignUpPage />}
+            element={user ? <Navigate to="/create" /> : <SignUpPage />}
           />
           <Route
             path="/create"

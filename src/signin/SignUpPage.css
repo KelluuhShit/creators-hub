@@ -64,7 +64,7 @@
 }
 
 .input-group input {
-  width: 100%;
+  width: 95%;
   padding: clamp(8px, 1.5vw, 10px);
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -213,4 +213,33 @@
   .signup-container {
     padding: 20px 16px;
   }
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.toggle-visibility {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  font-size: 16px;
+  padding: 0;
+  transition: color 0.3s;
+}
+
+.toggle-visibility:hover,
+.toggle-visibility:focus {
+  color: #833AB4;
+}
+
+.toggle-visibility:focus {
+  outline: 2px solid #833AB4;
+  outline-offset: 2px;
 }

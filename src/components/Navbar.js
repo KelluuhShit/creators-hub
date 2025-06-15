@@ -2,9 +2,8 @@ import { NavLink, Navigate } from 'react-router-dom';
 import { IoAddCircleOutline, IoStatsChartOutline, IoPersonOutline } from 'react-icons/io5';
 import './Navbar.css';
 
-function Navbar() {
-  const userSubscription = JSON.parse(localStorage.getItem('userSubscription') || '{}');
-  const isAuthenticated = !!userSubscription.tier; // Check if any tier exists (Free or Premium)
+function Navbar({ user }) {
+  const isAuthenticated = !!user; // Check if user exists (Firebase auth)
 
   const protectedRoutes = ['/create', '/free-analytics', '/profile'];
   if (!isAuthenticated && protectedRoutes.includes(window.location.pathname)) {

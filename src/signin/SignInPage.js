@@ -1,16 +1,63 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, googleProvider } from '../services/firebase';
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebookF, FaApple } from 'react-icons/fa';
+import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
+import logoImg from '../assets/logo192.jpg';
 import './SignInPage.css';
 
 function SignInPage() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [acceptPrivacy, setAcceptPrivacy] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleEmailSignIn = async (e) => {
+    e.preventDefault();
+    setError('');
+    if (!acceptPrivacy) {
+      setError('You must accept the terms and privacy policy.');
+      return;
+    }
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      const user = result.user;
+      console.log('Email Sign-In successful:', user.email);
+      localStorage.setItem(
+        'userData',
+        JSON.stringify({
+          email: user.email,
+          uid: user.uid,
+          displayName: user.displayName,
+        })
+      );
+      navigate('/create');
+    } catch (error) {
+      console.error('Email Sign-In error:', error.message, error.code);
+      switch (error.code) {
+        case 'auth/user-not-found':
+        case 'auth/wrong-password':
+          setError('Invalid email or password.');
+          break;
+        case 'auth/invalid-email':
+          setError('Invalid email address.');
+          break;
+        case 'auth/too-many-requests':
+          setError('Too many attempts. Please try again later.');
+          break;
+        default:
+          setError('Failed to sign in. Please try again.');
+      }
+    }
+  };
 
   const handleGoogleSignIn = async () => {
+    setError('');
     try {
-      console.log('Initiating Google Sign-In');
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       console.log('Google Sign-In successful:', user.email);
@@ -22,51 +69,96 @@ function SignInPage() {
           displayName: user.displayName,
         })
       );
-      navigate('/create'); // Navigate to /create after successful sign-in
+      navigate('/create');
     } catch (error) {
-      console.error('Google Sign-In error:', error.message);
-      alert('Failed to sign in with Google. Please try again.');
+      console.error('Google Sign-In error:', error.message, error.code);
+      if (error.code === 'auth/popup-closed-by-user') {
+        setError('Sign-in cancelled.');
+      } else {
+        setError('Failed to sign in with Google. Please try again.');
+      }
     }
   };
 
   return (
     <div className="signin-container">
-      <div className="signin-header">
-        <h1>Sign in</h1>
-      </div>
-      <div className="signin-form">
-        <div className="input-group">
-          <label><span className="icon">✉️</span> Email</label>
-          <input type="email" placeholder="Your email" disabled />
+      <section className="signin-section">
+        <h2>Welcome Back to Creator's Hub</h2>
+        <p>Sign in to manage your content and grow your audience.</p>
+        {error && <p className="error-message" aria-live="polite">{error}</p>}
+        <div className="signin-form">
+          <form onSubmit={handleEmailSignIn}>
+            <div className="input-group">
+              <label>
+                <span className="icon"><FiMail /></span> Email
+              </label>
+              <input
+                type="email"
+                placeholder="Your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                aria-describedby={error ? 'email-error' : undefined}
+              />
+            </div>
+            <div className="input-group">
+              <label>
+                <span className="icon"><FiLock /></span> Password
+              </label>
+              <div className="input-wrapper">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="toggle-visibility"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
+              </div>
+            </div>
+            <div className="terms-checkbox">
+              <input
+                type="checkbox"
+                id="accept-privacy"
+                checked={acceptPrivacy}
+                onChange={(e) => setAcceptPrivacy(e.target.checked)}
+                required
+              />
+              <label htmlFor="accept-privacy">
+                I accept the <a href="/terms" target="_blank">terms</a> and{' '}
+                <a href="/privacy" target="_blank">privacy policy</a>
+              </label>
+            </div>
+            <button type="submit" className="signin-button">
+              Sign In
+            </button>
+          </form>
         </div>
-        <div className="input-group">
-          <label><span className="icon">🔒</span> Password</label>
-          <input type="password" placeholder="Enter your password" disabled />
+        <div className="social-login">
+          <span>Or sign in with</span>
+          <div className="social-buttons">
+            <button className="social-button" disabled>
+              <FaFacebookF /> Facebook
+            </button>
+            <button className="social-button" onClick={handleGoogleSignIn}>
+              <FcGoogle /> Google
+            </button>
+            <button className="social-button" disabled>
+              <FaApple /> Apple
+            </button>
+          </div>
         </div>
-        <div className="terms-checkbox">
-          <span className="checkbox-icon">✔️</span> I accept the terms and privacy policy
-        </div>
-        <button className="signin-button" disabled>
-          Sign in
-        </button>
-      </div>
-      <div className="social-login">
-        <span>Or Register with</span>
-        <div className="social-buttons">
-          <button className="social-button" disabled>
-            <FaFacebookF /> Facebook
-          </button>
-          <button className="social-button" onClick={handleGoogleSignIn}>
-            <FcGoogle /> Google
-          </button>
-          <button className="social-button" disabled>
-            <FaApple /> Apple
-          </button>
-        </div>
-      </div>
-      <p className="signup-link">
-        Already have an account? <span onClick={() => navigate('/signup')}>Sign up</span>
-      </p>
+        <p className="signup-link">
+          Don’t have an account? <span onClick={() => navigate('/signup')}>Sign Up</span>
+        </p>
+      </section>
     </div>
   );
 }
