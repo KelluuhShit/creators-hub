@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, googleProvider } from '../services/firebase';
-import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebookF, FaApple } from 'react-icons/fa';
 import { FiMail, FiUser, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
@@ -27,16 +28,22 @@ function SignUpPage() {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       const user = result.user;
+      // Update displayName in Firebase Auth
+      await updateProfile(user, { displayName: username });
       console.log('Email Sign-Up successful:', user.email);
+      // Store userData in localStorage
       localStorage.setItem(
         'userData',
         JSON.stringify({
           email: user.email,
           uid: user.uid,
-          displayName: username || user.displayName,
+          displayName: username,
         })
       );
-      navigate('/create');
+      // Set notVerified in Firestore
+      const db = getFirestore();
+      await setDoc(doc(db, 'users', user.uid), { verified: false, email: user.email, displayName: username }, { merge: true });
+      navigate('/verify-account');
     } catch (error) {
       console.error('Email Sign-Up error:', error.message, error.code);
       switch (error.code) {
@@ -61,6 +68,7 @@ function SignUpPage() {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       console.log('Google Sign-Up successful:', user.email);
+      // Store userData in localStorage
       localStorage.setItem(
         'userData',
         JSON.stringify({
@@ -69,7 +77,10 @@ function SignUpPage() {
           displayName: user.displayName,
         })
       );
-      navigate('/create');
+      // Set notVerified in Firestore
+      const db = getFirestore();
+      await setDoc(doc(db, 'users', user.uid), { verified: false, email: user.email, displayName: user.displayName }, { merge: true });
+      navigate('/verify-account');
     } catch (error) {
       console.error('Google Sign-Up error:', error.message, error.code);
       if (error.code === 'auth/popup-closed-by-user') {

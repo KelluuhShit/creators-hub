@@ -217,3 +217,38 @@
     padding: 20px 16px;
   }
 }
+
+.forgot-password,
+.back-link {
+  font-size: clamp(0.85rem, 1.6vw, 0.95rem);
+  color: #555;
+  text-align: left;
+  margin-bottom: clamp(15px, 3vw, 20px);
+}
+
+.forgot-password span,
+.back-link span {
+  color: #833AB4;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.forgot-password span:hover,
+.forgot-password span:focus,
+.back-link span:hover,
+.back-link span:focus {
+  color: #6A1B9A;
+}
+
+.forgot-password span:focus,
+.back-link span:focus {
+  outline: 2px solid #833AB4;
+  outline-offset: 2px;
+}
+
+.success-message {
+  color: #2e7d32;
+  font-size: clamp(0.85rem, 1.6vw, 0.95rem);
+  margin-bottom: clamp(10px, 2vw, 15px);
+  text-align: left;
+}

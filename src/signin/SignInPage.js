@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, googleProvider } from '../services/firebase';
 import { signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebookF, FaApple } from 'react-icons/fa';
 import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
@@ -38,7 +39,10 @@ function SignInPage() {
           displayName: user.displayName,
         })
       );
-      navigate('/create');
+      // Set notVerified in Firestore
+      const db = getFirestore();
+      await setDoc(doc(db, 'users', user.uid), { verified: false, email: user.email }, { merge: true });
+      navigate('/verify-account');
     } catch (error) {
       console.error('Email Sign-In error:', error.message, error.code);
       switch (error.code) {
@@ -72,7 +76,10 @@ function SignInPage() {
           displayName: user.displayName,
         })
       );
-      navigate('/create');
+      // Set notVerified in Firestore
+      const db = getFirestore();
+      await setDoc(doc(db, 'users', user.uid), { verified: false, email: user.email }, { merge: true });
+      navigate('/verify-account');
     } catch (error) {
       console.error('Google Sign-In error:', error.message, error.code);
       if (error.code === 'auth/popup-closed-by-user') {

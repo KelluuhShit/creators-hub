@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Outlet, Navigate, useLocation }
 import { useEffect, useState } from 'react';
 import { auth } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import Navbar from './components/Navbar';
 import Revenue from './components/Revenue';
 import EarningsSummary from './components/EarningsSummary';
@@ -18,117 +19,129 @@ import Profile from './pages/Profile';
 import LandingPage from './signin/LandingPage';
 import SignInPage from './signin/SignInPage';
 import SignUpPage from './signin/SignUpPage';
+import VerifyAccountPage from './pages/VerifyAccountPage';
 import './App.css';
 
-// Pass user as a prop to Layout
-function Layout({ user }) {
+function Layout({ user, isVerified }) {
   const location = useLocation();
-  // Hide Navbar on /, /signin, and /signup
-  const hideNavbarRoutes = ['/', '/signin', '/signup'];
+  const hideNavbarRoutes = ['/', '/signin', '/signup', '/verify-account'];
   const showNavbar = !hideNavbarRoutes.includes(location.pathname);
 
   return (
     <div className={showNavbar ? 'app-container' : 'auth-container'}>
       <Outlet />
-      {showNavbar && <Navbar user={user} />} {/* Use user prop */}
+      {showNavbar && <Navbar user={user} />}
     </div>
   );
 }
 
 function App() {
   const [user, setUser] = useState(null);
+  const [isVerified, setIsVerified] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const db = getFirestore();
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
-      setLoading(false);
       if (currentUser) {
         console.log('User authenticated:', currentUser.email);
-        localStorage.setItem(
-          'userData',
-          JSON.stringify({
-            email: currentUser.email,
-            uid: currentUser.uid,
-            displayName: currentUser.displayName,
-          })
-        );
+        const userData = {
+          email: currentUser.email,
+          uid: currentUser.uid,
+          displayName: currentUser.displayName,
+        };
+        localStorage.setItem('userData', JSON.stringify(userData));
+        // Check verification status in Firestore
+        try {
+          const userDoc = doc(db, 'users', currentUser.uid);
+          const docSnap = await getDoc(userDoc);
+          const verified = docSnap.exists() && docSnap.data().verified;
+          setIsVerified(verified);
+        } catch (error) {
+          console.error('Firestore error:', error.message);
+        }
       } else {
         console.log('No user authenticated');
         localStorage.removeItem('userData');
+        setIsVerified(false);
       }
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Simple loading state
+    return <div>Loading...</div>;
   }
 
   return (
     <Router>
       <Routes>
-        {/* Pass user to Layout */}
-        <Route element={<Layout user={user} />}>
+        <Route element={<Layout user={user} isVerified={isVerified} />}>
           <Route
             path="/"
-            element={user ? <Navigate to="/create" /> : <LandingPage />}
+            element={user ? <Navigate to={isVerified ? "/create" : "/verify-account"} /> : <LandingPage />}
           />
           <Route
             path="/signin"
-            element={user ? <Navigate to="/create" /> : <SignInPage />}
+            element={user ? <Navigate to={isVerified ? "/create" : "/verify-account"} /> : <SignInPage />}
           />
           <Route
             path="/signup"
-            element={user ? <Navigate to="/create" /> : <SignUpPage />}
+            element={user ? <Navigate to={isVerified ? "/create" : "/verify-account"} /> : <SignUpPage />}
+          />
+          <Route
+            path="/verify-account"
+            element={user ? <VerifyAccountPage setIsVerified={setIsVerified} /> : <Navigate to="/signin" />}
           />
           <Route
             path="/create"
-            element={user ? <Create /> : <Navigate to="/signin" />}
+            element={user && isVerified ? <Create /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
           />
           <Route
             path="/revenue"
-            element={user ? <Revenue /> : <Navigate to="/signin" />}
+            element={user && isVerified ? <Revenue /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
           />
           <Route
             path="/free-analytics"
-            element={user ? <FreeAnalytics /> : <Navigate to="/signin" />}
+            element={user && isVerified ? <FreeAnalytics /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
           />
           <Route
             path="/earnings-summary"
-            element={user ? <EarningsSummary /> : <Navigate to="/signin" />}
+            element={user && isVerified ? <EarningsSummary /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
           />
           <Route
             path="/choose-account"
-            element={user ? <ChooseAccount /> : <Navigate to="/signin" />}
+            element={user && isVerified ? <ChooseAccount /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
           />
           <Route
             path="/account-selections"
-            element={user ? <AccountSelections /> : <Navigate to="/signin" />}
+            element={user && isVerified ? <AccountSelections /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
           />
           <Route
             path="/confirm-withdraw"
-            element={user ? <ConfirmWithdraw /> : <Navigate to="/signin" />}
+            element={user && isVerified ? <ConfirmWithdraw /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
           />
           <Route
             path="/subscribe"
-            element={user ? <Subscribe /> : <Navigate to="/signin" />}
+            element={user && isVerified ? <Subscribe /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
           />
           <Route
             path="/monitor"
-            element={user ? <Monitor /> : <Navigate to="/signin" />}
+            element={user && isVerified ? <Monitor /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
           />
           <Route
             path="/payout"
-            element={user ? <Payout /> : <Navigate to="/signin" />}
+            element={user && isVerified ? <Payout /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
           />
           <Route
             path="/success"
-            element={user ? <Success /> : <Navigate to="/signin" />}
+            element={user && isVerified ? <Success /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
           />
           <Route
             path="/profile"
-            element={user ? <Profile /> : <Navigate to="/signin" />}
+            element={user && isVerified ? <Profile /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
           />
         </Route>
       </Routes>
