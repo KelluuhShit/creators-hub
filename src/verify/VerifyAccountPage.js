@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { getAuth, onAuthStateChanged, sendEmailVerification } from 'firebase/auth';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { FiCheckCircle } from 'react-icons/fi';
 import './VerifyAccountPage.css';
 
@@ -34,7 +34,6 @@ function VerifyAccountPage({ setIsVerified }) {
         return;
       }
 
-      // Check verification status in Firestore
       try {
         const userDoc = doc(db, 'users', user.uid);
         const docSnap = await getDoc(userDoc);
@@ -61,16 +60,30 @@ function VerifyAccountPage({ setIsVerified }) {
     setError('');
     setSuccess('');
 
-    const db = getFirestore();
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (!user) {
+      setError('No user is signed in.');
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const userDoc = doc(db, 'users', userData.uid);
-      await setDoc(userDoc, { verified: true, email: userData.email }, { merge: true });
-      setSuccess('Account verified successfully!');
-      setIsVerified(true);
-      navigate('/create');
+      const actionCodeSettings = {
+        url: `${window.location.origin}/verify-email`,
+        handleCodeInApp: true,
+      };
+      console.log('Sending verification email to:', user.email, 'with settings:', actionCodeSettings); // Debug
+      await sendEmailVerification(user, actionCodeSettings);
+      setSuccess('Verification email sent! Please check your inbox and click the link to verify.');
     } catch (error) {
-      console.error('Verification error:', error.message);
-      setError('Failed to verify account. Please try again.');
+      console.error('Verification email error:', error.code, error.message);
+      if (error.code === 'auth/too-many-requests') {
+        setError('Too many requests. Please try again later.');
+      } else {
+        setError(`Failed to send verification email: ${error.message}`);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -92,8 +105,18 @@ function VerifyAccountPage({ setIsVerified }) {
               <p>Authenticated as {userData.email}</p>
             </div>
             <button type="submit" className="verify-button" disabled={isLoading}>
-              {isLoading ? 'Verifying...' : 'Verify'}
+              {isLoading ? 'Sending...' : 'Send Verification Email'}
             </button>
+            {success && (
+              <button
+                type="button"
+                className="resend-button"
+                onClick={handleVerify}
+                disabled={isLoading}
+              >
+                Resend Verification Email
+              </button>
+            )}
           </form>
         </div>
       </section>

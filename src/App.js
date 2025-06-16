@@ -19,12 +19,13 @@ import Profile from './pages/Profile';
 import LandingPage from './signin/LandingPage';
 import SignInPage from './signin/SignInPage';
 import SignUpPage from './signin/SignUpPage';
-import VerifyAccountPage from './pages/VerifyAccountPage';
+import VerifyAccountPage from './verify/VerifyAccountPage';
+import VerifyEmailPage from './verify/VerifyEmailPage';
 import './App.css';
 
 function Layout({ user, isVerified }) {
   const location = useLocation();
-  const hideNavbarRoutes = ['/', '/signin', '/signup', '/verify-account'];
+  const hideNavbarRoutes = ['/', '/signin', '/signup', '/verify-account', '/verify-email'];
   const showNavbar = !hideNavbarRoutes.includes(location.pathname);
 
   return (
@@ -52,7 +53,6 @@ function App() {
           displayName: currentUser.displayName,
         };
         localStorage.setItem('userData', JSON.stringify(userData));
-        // Check verification status in Firestore
         try {
           const userDoc = doc(db, 'users', currentUser.uid);
           const docSnap = await getDoc(userDoc);
@@ -94,6 +94,10 @@ function App() {
           <Route
             path="/verify-account"
             element={user ? <VerifyAccountPage setIsVerified={setIsVerified} /> : <Navigate to="/signin" />}
+          />
+          <Route
+            path="/verify-email"
+            element={<VerifyEmailPage />}
           />
           <Route
             path="/create"
