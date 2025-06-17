@@ -1,9 +1,12 @@
-// src/pages/Create.js
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 import { IoAdd, IoArrowBack, IoPaperPlaneOutline, IoImageOutline, IoVideocamOutline, IoTextOutline } from 'react-icons/io5';
 import './Create.css';
 
 function Create() {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isFabOpen, setIsFabOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
@@ -12,15 +15,43 @@ function Create() {
   const [fileName, setFileName] = useState('');
   const fileInputRef = useRef(null);
 
-  // Simulate loading delay (replace with actual data fetching later)
+  useEffect(() => {
+    const auth = getAuth();
+    const db = getFirestore();
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        navigate('/signin');
+        return;
+      }
+      try {
+        await user.getIdToken(true); // Refresh token
+        const userDoc = doc(db, 'users', user.uid);
+        const docSnap = await getDoc(userDoc);
+        if (docSnap.exists() && docSnap.data().verified) {
+          // Already verified, stay on page
+        } else if (user.emailVerified) {
+          // Link clicked, update Firestore
+          await setDoc(userDoc, { verified: true, email: user.email }, { merge: true });
+          console.log('Firestore updated for user:', user.uid);
+        } else {
+          navigate('/verify-account');
+        }
+      } catch (error) {
+        console.error('Auth or Firestore error:', error.message);
+        navigate('/verify-account');
+      }
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 6000); // 2-second delay for demo
+    }, 6000);
     return () => clearTimeout(timer);
   }, []);
 
-  // Clean up object URLs to prevent memory leaks
   useEffect(() => {
     return () => {
       if (postContent) URL.revokeObjectURL(postContent);
@@ -30,10 +61,10 @@ function Create() {
   const toggleFab = () => setIsFabOpen(!isFabOpen);
   const openModal = (type) => {
     setModalType(type);
-    setIsFabOpen(false); // Close FAB buttons when modal opens
-    setPostContent(null); // Reset content
-    setCaption(''); // Reset caption
-    setFileName(''); // Reset file name
+    setIsFabOpen(false);
+    setPostContent(null);
+    setCaption('');
+    setFileName('');
   };
   const closeModal = () => setModalType(null);
 

@@ -19,18 +19,21 @@ function SignInPage() {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [resetMessage, setResetMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleEmailSignIn = async (e) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
     if (!acceptPrivacy) {
       setError('You must accept the terms and privacy policy.');
+      setIsLoading(false);
       return;
     }
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       const user = result.user;
-      console.log('Email Sign-In successful:', user.email);
+      console.log('Email Sign-In: emailVerified:', user.emailVerified);
       localStorage.setItem(
         'userData',
         JSON.stringify({
@@ -39,12 +42,11 @@ function SignInPage() {
           displayName: user.displayName,
         })
       );
-      // Set notVerified in Firestore
       const db = getFirestore();
-      await setDoc(doc(db, 'users', user.uid), { verified: false, email: user.email }, { merge: true });
-      navigate('/verify-account');
+      await setDoc(doc(db, 'users', user.uid), { verified: user.emailVerified, email: user.email }, { merge: true });
+      navigate(user.emailVerified ? '/create' : '/verify-account');
     } catch (error) {
-      console.error('Email Sign-In error:', error.message, error.code);
+      console.error('Email Sign-In error:', error.code, error.message);
       switch (error.code) {
         case 'auth/user-not-found':
         case 'auth/wrong-password':
@@ -56,18 +58,24 @@ function SignInPage() {
         case 'auth/too-many-requests':
           setError('Too many attempts. Please try again later.');
           break;
+        case 'auth/network-request-failed':
+          setError('Network error. Please check your connection.');
+          break;
         default:
-          setError('Failed to sign in. Please try again.');
+          setError(`Failed to sign in: ${error.message}`);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleGoogleSignIn = async () => {
     setError('');
+    setIsLoading(true);
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      console.log('Google Sign-In successful:', user.email);
+      console.log('Google Sign-In: emailVerified:', user.emailVerified);
       localStorage.setItem(
         'userData',
         JSON.stringify({
@@ -76,17 +84,23 @@ function SignInPage() {
           displayName: user.displayName,
         })
       );
-      // Set notVerified in Firestore
       const db = getFirestore();
-      await setDoc(doc(db, 'users', user.uid), { verified: false, email: user.email }, { merge: true });
-      navigate('/verify-account');
+      await setDoc(doc(db, 'users', user.uid), { verified: user.emailVerified, email: user.email }, { merge: true });
+      navigate(user.emailVerified ? '/create' : '/verify-account');
     } catch (error) {
-      console.error('Google Sign-In error:', error.message, error.code);
-      if (error.code === 'auth/popup-closed-by-user') {
-        setError('Sign-in cancelled.');
-      } else {
-        setError('Failed to sign in with Google. Please try again.');
+      console.error('Google Sign-In error:', error.code, error.message);
+      switch (error.code) {
+        case 'auth/popup-closed-by-user':
+          setError('Sign-in cancelled.');
+          break;
+        case 'auth/network-request-failed':
+          setError('Network error. Please check your connection.');
+          break;
+        default:
+          setError(`Failed to sign in with Google: ${error.message}`);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -94,12 +108,13 @@ function SignInPage() {
     e.preventDefault();
     setResetMessage('');
     setError('');
+    setIsLoading(true);
     try {
       await sendPasswordResetEmail(auth, resetEmail);
-      setResetMessage('Password reset email sent. Check your inbox.');
+      setResetMessage('Password reset email sent. Check your inbox and spam folder.');
       setResetEmail('');
     } catch (error) {
-      console.error('Password Reset error:', error.message, error.code);
+      console.error('Password Reset error:', error.code, error.message);
       switch (error.code) {
         case 'auth/invalid-email':
           setError('Invalid email address.');
@@ -107,16 +122,21 @@ function SignInPage() {
         case 'auth/user-not-found':
           setError('No account found with this email.');
           break;
+        case 'auth/network-request-failed':
+          setError('Network error. Please check your connection.');
+          break;
         default:
-          setError('Failed to send reset email. Please try again.');
+          setError(`Failed to send reset email: ${error.message}`);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="signin-container">
       <section className="signin-section">
-        <h2>{isForgotPassword ? 'Reset Your Password' : 'Welcome Back to Creator\'s Hub'}</h2>
+        <h2>{isForgotPassword ? 'Reset Your Password' : "Welcome Back to Creator's Hub"}</h2>
         <p>{isForgotPassword ? 'Enter your email to receive a password reset link.' : 'Sign in to manage your content and grow your audience.'}</p>
         {error && <p className="error-message" aria-live="polite">{error}</p>}
         {resetMessage && <p className="success-message" aria-live="polite">{resetMessage}</p>}
@@ -136,8 +156,8 @@ function SignInPage() {
                   aria-describedby={error ? 'email-error' : undefined}
                 />
               </div>
-              <button type="submit" className="signin-button">
-                Send Reset Link
+              <button type="submit" className="signin-button" disabled={isLoading}>
+                {isLoading ? 'Sending...' : 'Send Reset Link'}
               </button>
               <p className="back-link">
                 <span onClick={() => setIsForgotPassword(false)}>Back to Sign In</span>
@@ -169,6 +189,7 @@ function SignInPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    aria-describedby={error ? 'password-error' : undefined}
                   />
                   <button
                     type="button"
@@ -196,8 +217,8 @@ function SignInPage() {
                   <a href="/privacy" target="_blank">privacy policy</a>
                 </label>
               </div>
-              <button type="submit" className="signin-button">
-                Sign In
+              <button type="submit" className="signin-button" disabled={isLoading}>
+                {isLoading ? 'Signing In...' : 'Sign In'}
               </button>
             </form>
           )}
@@ -207,13 +228,13 @@ function SignInPage() {
             <div className="social-login">
               <span>Or sign in with</span>
               <div className="social-buttons">
-                <button className="social-button" disabled>
+                <button className="social-button" disabled title="Coming soon">
                   <FaFacebookF /> Facebook
                 </button>
-                <button className="social-button" onClick={handleGoogleSignIn}>
+                <button className="social-button" onClick={handleGoogleSignIn} disabled={isLoading}>
                   <FcGoogle /> Google
                 </button>
-                <button className="social-button" disabled>
+                <button className="social-button" disabled title="Coming soon">
                   <FaApple /> Apple
                 </button>
               </div>
