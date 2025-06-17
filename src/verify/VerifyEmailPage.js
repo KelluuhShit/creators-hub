@@ -1,68 +1,81 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { getAuth, applyActionCode } from 'firebase/auth';
+import { getAuth, applyActionCode, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import './VerifyEmailPage.css';
 
 function VerifyEmailPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   useEffect(() => {
-    const handleVerification = async () => {
+    const prepareVerification = async () => {
       const auth = getAuth();
-      const db = getFirestore();
       const urlParams = new URLSearchParams(location.search);
-      const oobCode = urlParams.get('oobCode');
+      const code = urlParams.get('oobCode');
       const mode = urlParams.get('mode');
-      console.log('Full URL:', window.location.href); // Debug
-      console.log('URL Params:', { oobCode, mode, search: location.search }); // Debug
+      console.log('Full URL:', window.location.href);
+      console.log('URL Params:', { oobCode: code, mode, search: location.search });
 
-      if (!oobCode || mode !== 'verifyEmail') {
-        setError('Invalid or missing verification code.');
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        await applyActionCode(auth, oobCode);
-        const user = auth.currentUser;
-        if (user) {
-          const userDoc = doc(db, 'users', user.uid);
-          await setDoc(userDoc, { verified: true, email: user.email }, { merge: true });
-          console.log('Firestore updated for user:', user.uid);
-          setSuccess('Email verified successfully! Redirecting...');
-          setTimeout(() => navigate('/create'), 2000);
-        } else {
-          setError('No user is signed in. Please sign in again.');
-          setTimeout(() => navigate('/signin'), 2000);
+      if (code && mode === 'verifyEmail') {
+        try {
+          await applyActionCode(auth, code); // Verify email
+        } catch (error) {
+          console.error('Verification error:', error.code, error.message);
         }
-      } catch (error) {
-        console.error('Verification error:', error.code, error.message);
-        if (error.code === 'auth/expired-action-code') {
-          setError('Verification link has expired. Please request a new one.');
-        } else if (error.code === 'auth/invalid-action-code') {
-          setError('Invalid verification link.');
-        } else {
-          setError(`Failed to verify email: ${error.message}`);
-        }
-      } finally {
-        setIsLoading(false);
       }
+      setIsLoading(false);
     };
 
-    handleVerification();
-  }, [navigate, location]);
+    prepareVerification();
+  }, [location]);
+
+  const handleGoToHome = async () => {
+    setButtonLoading(true);
+    const auth = getAuth();
+    const db = getFirestore();
+    try {
+      await new Promise((resolve, reject) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+          unsubscribe();
+          if (user) {
+            resolve(user);
+          } else {
+            reject(new Error('No user signed in'));
+          }
+        });
+      });
+      const user = auth.currentUser;
+      const userDoc = doc(db, 'users', user.uid);
+      console.log('Attempting to set verified: true for user:', user.uid);
+      await setDoc(userDoc, { verified: true, email: user.email }, { merge: true });
+      console.log('Firestore updated successfully for user:', user.uid);
+      navigate('/create'); // Redirect to /create
+    } catch (error) {
+      console.error('Error in handleGoToHome:', error.message);
+    } finally {
+      setButtonLoading(false);
+    }
+  };
+
+  if (isLoading) return <div className="page-loader">Loading...</div>;
 
   return (
     <div className="verify-email-container">
-      <h2>Email Verification</h2>
-      {isLoading && <p>Processing verification...</p>}
-      {error && <p className="error-message">{error}</p>}
-      {success && <p className="success-message">{success}</p>}
+      <h2>Email verified successfully</h2>
+      <button
+        className={`go-to-home-button ${buttonLoading ? 'loading' : ''}`}
+        onClick={handleGoToHome}
+        disabled={buttonLoading}
+      >
+        {buttonLoading ? (
+          <span className="button-spinner"></span>
+        ) : (
+          'Go to home'
+        )}
+      </button>
     </div>
   );
 }

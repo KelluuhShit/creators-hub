@@ -71,12 +71,12 @@ function VerifyAccountPage({ setIsVerified }) {
 
     try {
       const actionCodeSettings = {
-        url: `${window.location.origin}/verify-email`,
+        url: 'http://localhost:3000/verify-email', // Redirect to /verify-email
         handleCodeInApp: true,
       };
-      console.log('Sending verification email to:', user.email, 'with settings:', actionCodeSettings); // Debug
+      console.log('Sending verification email to:', user.email, 'with settings:', actionCodeSettings);
       await sendEmailVerification(user, actionCodeSettings);
-      setSuccess('Verification email sent! Please check your inbox and click the link to verify.');
+      setSuccess('Verification email sent! Please check your inbox and spam folder.');
     } catch (error) {
       console.error('Verification email error:', error.code, error.message);
       if (error.code === 'auth/too-many-requests') {
@@ -87,6 +87,13 @@ function VerifyAccountPage({ setIsVerified }) {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSignOut = () => {
+    const auth = getAuth();
+    auth.signOut();
+    localStorage.removeItem('userData');
+    navigate('/signin');
   };
 
   if (!userData || isVerifiedInDb === null) return null;
@@ -117,6 +124,13 @@ function VerifyAccountPage({ setIsVerified }) {
                 Resend Verification Email
               </button>
             )}
+            <button
+              type="button"
+              className="signout-button"
+              onClick={handleSignOut}
+            >
+              Sign Out
+            </button>
           </form>
         </div>
       </section>
