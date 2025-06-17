@@ -71,7 +71,7 @@ function VerifyAccountPage({ setIsVerified }) {
 
     try {
       const actionCodeSettings = {
-        url: 'http://localhost:3000/verify-email', // Redirect to /verify-email
+        url: 'https://creatorshub-ke.vercel.app/verify-email', // Redirect to /verify-email
         handleCodeInApp: true,
       };
       console.log('Sending verification email to:', user.email, 'with settings:', actionCodeSettings);
