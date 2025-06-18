@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { IoCheckmarkCircle, IoLogOutOutline, IoDownloadOutline, IoMenuOutline, IoCloseOutline } from 'react-icons/io5';
+import { IoCheckmarkCircle, IoLogOutOutline, IoDownloadOutline, IoMenuOutline, IoCloseOutline, IoArrowForward } from 'react-icons/io5';
 import './Profile.css';
 
 function Profile() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState(null);
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isPremium, setIsPremium] = useState(false); // Placeholder for premium status
+  const [isPremium, setIsPremium] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
@@ -25,7 +27,6 @@ function Profile() {
       }
 
       try {
-        // Fetch user data from Firestore
         const userDoc = doc(db, 'users', user.uid);
         const docSnap = await getDoc(userDoc);
         if (!docSnap.exists() || !docSnap.data().verified) {
@@ -47,10 +48,8 @@ function Profile() {
           instagramConnected: data.instagramConnected || false,
         });
 
-        // Check premium status (placeholder)
-        setIsPremium(data.isPremium || false);
+        setIsPremium(data.isPremium ?? false);
 
-        // Fetch posts (mock for now)
         setPosts([
           { id: '1', image: 'https://images.pexels.com/photos/7480538/pexels-photo-7480538.jpeg?auto=compress&cs=tinysrgb&w=600' },
           { id: '2', image: 'https://images.pexels.com/photos/5053846/pexels-photo-5053846.jpeg?auto=compress&cs=tinysrgb&w=600' },
@@ -85,29 +84,69 @@ function Profile() {
 
   const handleConnectInstagram = () => {
     console.log('Initiate Instagram connection');
-    // Placeholder for Instagram OAuth
   };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const toggleSettingsModal = () => {
+    setIsSettingsModalOpen(!isSettingsModalOpen);
+    setIsMenuOpen(false);
+  };
+
   const handleMenuNavigation = (path) => {
     setIsMenuOpen(false);
-    navigate(path);
+    try {
+      if (path === '/free-analytics') {
+        navigate(isPremium ? '/monitor' : '/free-analytics');
+      } else if (path === '/revenue') {
+        navigate('/revenue', { state: { from: pathname } });
+      } else if (path === '/settings') {
+        toggleSettingsModal();
+      } else {
+        navigate(path);
+      }
+    } catch (err) {
+      console.error('Navigation error:', err.message);
+      setError('Failed to navigate. Please try again.');
+    }
+  };
+
+  const handleSettingsNavigation = (path) => {
+    setIsSettingsModalOpen(false);
+    try {
+      navigate(path, { state: { from: pathname } });
+    } catch (err) {
+      console.error('Settings navigation error:', err.message);
+      setError('Failed to navigate. Please try again.');
+    }
   };
 
   const handleOverlayClick = () => {
     setIsMenuOpen(false);
+    setIsSettingsModalOpen(false);
   };
 
   if (error) {
-    return <div className="error-message">{error}</div>;
+    return (
+      <div className="error-message">
+        <p>{error}</p>
+        <button type="button" onClick={() => window.location.reload()} aria-label="Retry loading profile">
+          Retry
+        </button>
+      </div>
+    );
   }
 
   return (
     <div className="profile-container">
-      <button className="hamburger-menu" onClick={toggleMenu} aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}>
+      <button
+        type="button"
+        className="hamburger-menu"
+        onClick={toggleMenu}
+        aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+      >
         {isMenuOpen ? <IoCloseOutline size={30} /> : <IoMenuOutline size={30} />}
       </button>
       {isMenuOpen && (
@@ -115,27 +154,94 @@ function Profile() {
           <div className="bottom-sheet" onClick={(e) => e.stopPropagation()}>
             <div className="bottom-sheet-header">
               <span className="bottom-sheet-handle"></span>
-              <button className="bottom-sheet-close" onClick={toggleMenu} aria-label="Close bottom sheet">
+              <button
+                type="button"
+                className="bottom-sheet-close"
+                onClick={toggleMenu}
+                aria-label="Close bottom sheet"
+              >
                 <IoCloseOutline size={24} />
               </button>
             </div>
             <div className="bottom-sheet-content">
-              <button className="menu-button" onClick={() => handleMenuNavigation('/analytics')}>
+              <button
+                type="button"
+                className="menu-button"
+                onClick={() => handleMenuNavigation('/free-analytics')}
+                aria-label="View analytics dashboard"
+              >
                 Analytics
               </button>
               <button
+                type="button"
                 className="menu-button"
                 onClick={() => handleMenuNavigation('/revenue')}
-                disabled={!isPremium}
                 title={isPremium ? '' : 'Available for premium accounts only'}
+                aria-label="View revenue statistics"
               >
                 Revenue
               </button>
-              <button className="menu-button" onClick={() => handleMenuNavigation('/settings')}>
+              <button
+                type="button"
+                className="menu-button"
+                onClick={() => handleMenuNavigation('/settings')}
+                aria-label="Open settings menu"
+              >
                 Settings
               </button>
-              <button className="menu-button" onClick={() => handleMenuNavigation('/account')}>
+              <button
+                type="button"
+                className="menu-button"
+                onClick={() => handleMenuNavigation('/account')}
+                aria-label="Go to account details"
+              >
                 Account
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {isSettingsModalOpen && (
+        <div className="settings-modal-overlay" onClick={handleOverlayClick}>
+          <div className="settings-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="settings-modal-header">
+              <h2 className="settings-modal-title">Settings</h2>
+              <button
+                type="button"
+                className="settings-modal-close"
+                onClick={toggleSettingsModal}
+                aria-label="Close settings modal"
+              >
+                <IoCloseOutline size={24} />
+              </button>
+            </div>
+            <div className="settings-modal-content">
+              <button
+                type="button"
+                className="settings-item"
+                onClick={() => handleSettingsNavigation('/account-information')}
+                aria-label="Go to account information"
+              >
+                <span>Account Information</span>
+                <IoArrowForward size={20} />
+              </button>
+              <button
+                type="button"
+                className="settings-item"
+                onClick={() => handleSettingsNavigation('/account-type')}
+                aria-label="Go to account type"
+              >
+                <span>Account Type</span>
+                <IoArrowForward size={20} />
+              </button>
+              <button
+                type="button"
+                className="settings-item"
+                onClick={() => handleSettingsNavigation('/connected-account')}
+                aria-label="Go to connected account"
+              >
+                <span>Connected Account</span>
+                <IoArrowForward size={20} />
               </button>
             </div>
           </div>
@@ -159,19 +265,31 @@ function Profile() {
           <>
             <div className="profile-header">
               <div className="profile-avatar-wrapper">
-                <img src={userData.photoURL} alt="Profile" className="profile-avatar" />
+                <img
+                  src={userData.photoURL}
+                  alt={`Profile picture of ${userData.displayName}`}
+                  className="profile-avatar"
+                />
               </div>
               <div className="profile-info">
                 <div className="profile-username-wrapper">
                   {userData.instagramConnected ? (
                     <>
                       <h1 className="profile-username">{userData.displayName}</h1>
-                      <IoCheckmarkCircle className="profile-verified" />
+                      <IoCheckmarkCircle
+                        className="profile-verified"
+                        aria-label="Verified account"
+                      />
                     </>
                   ) : (
                     <>
                       <h1 className="profile-username">-</h1>
-                      <button className="connect-instagram-button" onClick={handleConnectInstagram}>
+                      <button
+                        type="button"
+                        className="connect-instagram-button"
+                        onClick={handleConnectInstagram}
+                        aria-label="Connect Instagram account"
+                      >
                         Connect my Instagram
                       </button>
                     </>
@@ -192,24 +310,42 @@ function Profile() {
                   </div>
                 </div>
                 <p className="profile-bio">{userData.bio}</p>
-                <a href={userData.website} target="_blank" rel="noopener noreferrer" className="profile-link">
+                <a
+                  href={userData.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="profile-link"
+                >
                   {userData.website.replace(/^https?:\/\//, '')}
                 </a>
               </div>
             </div>
             <div className="profile-grid">
               {posts.map((post) => (
-                <img key={post.id} src={post.image} alt="Post" className="profile-post-image" />
+                <img
+                  key={post.id}
+                  src={post.image}
+                  alt={`Post ${post.id} by ${userData.displayName}`}
+                  className="profile-post-image"
+                />
               ))}
             </div>
             <div className="profile-buttons">
-              <button className="download-app-button" onClick={handleDownloadApp}>
-                <IoDownloadOutline size={20} />
-                Download App
+              <button
+                type="button"
+                className="download-app-button"
+                onClick={handleDownloadApp}
+                aria-label="Download the app"
+              >
+                <IoDownloadOutline size={20} /> Download App
               </button>
-              <button className="logout-button" onClick={handleLogOut}>
-                <IoLogOutOutline size={20} />
-                Log Out
+              <button
+                type="button"
+                className="logout-button"
+                onClick={handleLogOut}
+                aria-label="Log out of account"
+              >
+                <IoLogOutOutline size={20} /> Log Out
               </button>
             </div>
           </>

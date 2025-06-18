@@ -105,17 +105,25 @@ function Revenue() {
     };
   }, [charts]);
 
-  const handleBackClick = () => navigate('/monitor');
+  const handleBackClick = () => {
+    // Check if navigation state contains 'from' route
+    if (state?.from) {
+      navigate(state.from);
+    } else {
+      // Fall back to history stack or default to /monitor
+      navigate(-1, { replace: true });
+    }
+  };
 
   const handlePayoutClick = () => {
-    navigate('/earnings-summary', { state: { balance: currentBalance } });
+    navigate('/earnings-summary', { state: { balance: currentBalance, from: '/revenue' } });
   };
 
   return (
     <div className="revenue-container">
       <div className="revenue-header">
         <h4 className="revenue-title">Revenue Statistics</h4>
-        <button className="back-button" onClick={handleBackClick} aria-label="Back to dashboard">
+        <button className="back-button" onClick={handleBackClick} aria-label="Go back to previous page">
           Back
         </button>
       </div>
@@ -148,7 +156,7 @@ function Revenue() {
           {charts.map((chart, index) => (
             <div key={index} className="chart-container">
               <h2 className="chart-title">{chart.title}</h2>
-              <div className="chart-wrapper">
+              <div className="chart-wrapper" aria-label={`Bar chart for ${chart.title}`}>
                 <Bar
                   data={chart.data}
                   options={{ ...chartOptions, plugins: { ...chartOptions.plugins, title: { ...chartOptions.plugins.title, text: chart.title } } }}

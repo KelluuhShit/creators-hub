@@ -16,6 +16,7 @@ import Monitor from './subscribe/premium/Monitor';
 import Create from './pages/Create';
 import FreeAnalytics from './pages/FreeAnalytics';
 import Profile from './pages/Profile';
+import UserInfo from './components/UserInfo';
 import LandingPage from './signin/LandingPage';
 import SignInPage from './signin/SignInPage';
 import SignUpPage from './signin/SignUpPage';
@@ -146,6 +147,22 @@ function App() {
           <Route
             path="/profile"
             element={user && isVerified ? <Profile /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
+          />
+          <Route
+            path="/account-information"
+            element={user && isVerified ? <UserInfo /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
+          />
+          <Route
+            path="/account-type"
+            element={user && isVerified ? <UserInfo /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
+          />
+          <Route
+            path="/connected-account"
+            element={user && isVerified ? <UserInfo /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
+          />
+          <Route
+            path="/upgrade"
+            element={user && isVerified ? <Subscribe /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
           />
         </Route>
       </Routes>
