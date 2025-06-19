@@ -1,19 +1,20 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoArrowBack, IoArrowForward, IoEyeOutline, IoHeartOutline, IoPeopleOutline } from 'react-icons/io5';
+import { UserContext } from '../context/UserContext';
 import SubscriptionModal from '../components/SubscriptionModal';
 import ActivityChartModal from '../subscribe/free/ActivityChartModal';
 import './FreeAnalytics.css';
 
 function FreeAnalytics() {
   const navigate = useNavigate();
-  const [isModalOpen, setModalOpen] = useState(false); // SubscriptionModal
-  const [isChartModalOpen, setChartModalOpen] = useState(false); // ActivityChartModal
-  const [selectedActivity, setSelectedActivity] = useState(null); // Track selected activity
-
-  // Check if user is premium from localStorage
-  const userSubscription = JSON.parse(localStorage.getItem('userSubscription') || '{}');
-  const isPremium = userSubscription?.premium === true;
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [isChartModalOpen, setChartModalOpen] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState(null);
+  
+  // Get user data from context
+  const { userData } = useContext(UserContext) || {};
+  const isPremium = userData?.isPremium === true;
 
   const analyticsData = {
     views: 1830,
@@ -28,9 +29,7 @@ function FreeAnalytics() {
     { id: 4, date: '2025-06-07', activity: '10 new comments on post' },
   ];
 
-  const handleBack = () => {
-    navigate(-1);
-  };
+  const handleBack = () => navigate(-1);
 
   const handleAdvancedStats = () => {
     if (isPremium) {
@@ -49,21 +48,9 @@ function FreeAnalytics() {
     }
   };
 
-  const handleModalClose = () => {
-    setModalOpen(false);
-  };
-
-  const handleChartModalClose = () => {
-    setChartModalOpen(false);
-    setSelectedActivity(null);
-  };
-
   return (
     <div className="free-analytics-container">
       <div className="button-group">
-        {/* <button className="back-button" onClick={handleBack} aria-label="Go back">
-          <IoArrowBack /> Back
-        </button> */}
         <button
           className="advanced-stats-button"
           onClick={handleAdvancedStats}
@@ -118,10 +105,17 @@ function FreeAnalytics() {
         ))}
       </div>
 
-      <SubscriptionModal isOpen={isModalOpen} onClose={handleModalClose} />
+      <SubscriptionModal 
+        isOpen={isModalOpen} 
+        onClose={() => setModalOpen(false)} 
+      />
+      
       <ActivityChartModal
         isOpen={isChartModalOpen}
-        onClose={handleChartModalClose}
+        onClose={() => {
+          setChartModalOpen(false);
+          setSelectedActivity(null);
+        }}
         activity={selectedActivity}
       />
     </div>
