@@ -2,8 +2,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { IoArrowBack } from 'react-icons/io5';
+import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { IoArrowBack, IoPencil, IoPerson, IoCall, IoCalendar } from 'react-icons/io5';
 import './UserInfo.css';
 
 function UserInfo() {
@@ -12,7 +12,10 @@ function UserInfo() {
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const { state } = useLocation(); // Get 'from' for back navigation
+  const [editField, setEditField] = useState(null);
+  const [editValue, setEditValue] = useState('');
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { state } = useLocation();
 
   useEffect(() => {
     const auth = getAuth();
@@ -37,11 +40,10 @@ function UserInfo() {
         setUserData({
           email: user.email,
           displayName: data.displayName || user.displayName || '-',
-          bio: data.bio || 'No bio provided.',
-          website: data.website || 'https://example.com',
+          phoneNumber: data.phoneNumber || '',
+          dateOfBirth: data.dateOfBirth || '',
           isPremium: data.isPremium || false,
           instagramConnected: data.instagramConnected || false,
-          // Add other fields as needed
         });
       } catch (err) {
         console.error('User info fetch error:', err.message);
@@ -58,6 +60,67 @@ function UserInfo() {
     navigate(state?.from || '/profile');
   };
 
+  const handleEditClick = (field, currentValue) => {
+    setEditField(field);
+    setEditValue(currentValue);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!userData) return;
+
+    // Validation
+    if (editField === 'displayName' && !editValue.trim()) {
+      setError('Display Name cannot be empty.');
+      return;
+    }
+    if (editField === 'phoneNumber' && editValue && !editValue.match(/^\+?\d{7,15}$/)) {
+      setError('Please enter a valid phone number (e.g., +1234567890 or 1234567890).');
+      return;
+    }
+    if (editField === 'dateOfBirth' && editValue) {
+      const dob = new Date(editValue);
+      const today = new Date();
+      const age = today.getFullYear() - dob.getFullYear();
+      const monthDiff = today.getMonth() - dob.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+        age--;
+      }
+      if (isNaN(dob.getTime())) {
+        setError('Please enter a valid date.');
+        return;
+      }
+      if (age < 13) {
+        setError('You must be at least 13 years old.');
+        return;
+      }
+    }
+
+    const auth = getAuth();
+    const db = getFirestore();
+    const userDoc = doc(db, 'users', auth.currentUser.uid);
+
+    try {
+      const updateData = { [editField]: editValue };
+      await updateDoc(userDoc, updateData);
+      setUserData((prev) => ({ ...prev, [editField]: editValue }));
+      setIsEditModalOpen(false);
+      setEditField(null);
+      setEditValue('');
+      setError('');
+    } catch (err) {
+      console.error('Update error:', err.message);
+      setError('Failed to save changes. Please try again.');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditModalOpen(false);
+    setEditField(null);
+    setEditValue('');
+    setError('');
+  };
+
   const getPageTitle = () => {
     switch (pathname) {
       case '/account-information':
@@ -71,6 +134,118 @@ function UserInfo() {
     }
   };
 
+  const getFieldConfig = () => {
+    switch (editField) {
+      case 'displayName':
+        return {
+          title: 'Display Name',
+          icon: <IoPerson size={32} />,
+          inputType: 'text',
+          isTextarea: false,
+          placeholder: 'Enter your display name',
+        };
+      case 'phoneNumber':
+        return {
+          title: 'Phone Number',
+          icon: <IoCall size={32} />,
+          inputType: 'tel',
+          isTextarea: false,
+          placeholder: 'Enter your phone number (e.g., +1234567890)',
+        };
+      case 'dateOfBirth':
+        return {
+          title: 'Date of Birth',
+          icon: <IoCalendar size={32} />,
+          inputType: 'date',
+          isTextarea: false,
+          placeholder: 'Select your date of birth',
+        };
+      default:
+        return null;
+    }
+  };
+
+  const renderEditModal = () => {
+    if (!isEditModalOpen || !editField) return null;
+    const fieldConfig = getFieldConfig();
+
+    if (!fieldConfig) return null;
+
+    return (
+      <div className="edit-modal-overlay" onClick={handleCancelEdit}>
+        <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="edit-modal-header">
+            <div className="edit-modal-icon">{fieldConfig.icon}</div>
+            <button
+              type="button"
+              className="edit-modal-close"
+              onClick={handleCancelEdit}
+              aria-label="Close edit modal"
+            >
+              <IoArrowBack size={24} />
+            </button>
+          </div>
+          <div className="edit-modal-content">
+            <h2 className="edit-modal-title">Edit {fieldConfig.title}</h2>
+            {fieldConfig.isTextarea ? (
+              <textarea
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                className="edit-modal-input edit-modal-textarea"
+                placeholder={fieldConfig.placeholder}
+                aria-label={`Edit ${fieldConfig.title.toLowerCase()}`}
+                autoFocus
+              />
+            ) : (
+              <input
+                type={fieldConfig.inputType}
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                className="edit-modal-input"
+                placeholder={fieldConfig.placeholder}
+                aria-label={`Edit ${fieldConfig.title.toLowerCase()}`}
+                autoFocus
+              />
+            )}
+            {error && <p className="edit-modal-error">{error}</p>}
+          </div>
+          <div className="edit-modal-footer">
+            <button
+              type="button"
+              className="edit-modal-save-button"
+              onClick={handleSaveEdit}
+              aria-label={`Change ${fieldConfig.title.toLowerCase()}`}
+            >
+              Change {fieldConfig.title}
+            </button>
+            <button
+              type="button"
+              className="edit-modal-cancel-button"
+              onClick={handleCancelEdit}
+              aria-label="Cancel edit"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return 'Not set';
+    try {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric',
+      });
+    } catch {
+      return 'Invalid date';
+    }
+  };
+
   const renderContent = () => {
     if (!userData) return null;
 
@@ -80,26 +255,49 @@ function UserInfo() {
           <div className="user-info-section">
             <div className="user-info-item">
               <span className="user-info-label">Display Name</span>
-              <span className="user-info-value">{userData.displayName}</span>
+              <div className="value-container">
+                <span className="user-info-value">{userData.displayName}</span>
+                <button
+                  type="button"
+                  className="edit-icon-button"
+                  onClick={() => handleEditClick('displayName', userData.displayName)}
+                  aria-label="Edit display name"
+                >
+                  <IoPencil size={18} />
+                </button>
+              </div>
             </div>
             <div className="user-info-item">
               <span className="user-info-label">Email</span>
               <span className="user-info-value">{userData.email}</span>
             </div>
             <div className="user-info-item">
-              <span className="user-info-label">Bio</span>
-              <span className="user-info-value">{userData.bio}</span>
+              <span className="user-info-label">Phone Number</span>
+              <div className="value-container">
+                <span className="user-info-value">{userData.phoneNumber || 'Not set'}</span>
+                <button
+                  type="button"
+                  className="edit-icon-button"
+                  onClick={() => handleEditClick('phoneNumber', userData.phoneNumber)}
+                  aria-label="Edit phone number"
+                >
+                  <IoPencil size={18} />
+                </button>
+              </div>
             </div>
             <div className="user-info-item">
-              <span className="user-info-label">Website</span>
-              <a
-                href={userData.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="user-info-link"
-              >
-                {userData.website.replace(/^https?:\/\//, '')}
-              </a>
+              <span className="user-info-label">Date of Birth</span>
+              <div className="value-container">
+                <span className="user-info-value">{formatDate(userData.dateOfBirth)}</span>
+                <button
+                  type="button"
+                  className="edit-icon-button"
+                  onClick={() => handleEditClick('dateOfBirth', userData.dateOfBirth)}
+                  aria-label="Edit date of birth"
+                >
+                  <IoPencil size={18} />
+                </button>
+              </div>
             </div>
           </div>
         );
@@ -150,7 +348,7 @@ function UserInfo() {
     }
   };
 
-  if (error) {
+  if (error && !isEditModalOpen) {
     return (
       <div className="error-message">
         <p>{error}</p>
@@ -181,7 +379,10 @@ function UserInfo() {
           <div className="skeleton-item"></div>
         </div>
       ) : (
-        renderContent()
+        <>
+          {renderContent()}
+          {renderEditModal()}
+        </>
       )}
     </div>
   );
