@@ -1,15 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { IoCheckmarkCircle, IoPencilOutline } from 'react-icons/io5';
-import './Account.css'; // Updated import
+import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import {
+  IoCheckmarkCircle,
+  IoPencilOutline,
+  IoArrowBack,
+  IoMailOutline,
+  IoCallOutline,
+  IoPersonOutline,
+  IoCalendarOutline,
+  IoGlobeOutline,
+  IoDocumentTextOutline,
+} from 'react-icons/io5';
+import './Account.css';
 
 function Account() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState('');
+  const [editField, setEditField] = useState(null);
+  const [editValue, setEditValue] = useState('');
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
@@ -61,12 +74,196 @@ function Account() {
     console.log('Initiate Instagram connection');
   };
 
-  const handleEdit = (field) => {
-    console.log(`Edit ${field}`);
-    // Placeholder for future edit functionality (e.g., open a modal or navigate to edit page)
+  const handleBackClick = () => {
+    navigate('/profile');
   };
 
-  if (error) {
+  const handleEditClick = (field, currentValue) => {
+    setEditField(field);
+    setEditValue(currentValue === 'Not provided' ? '' : currentValue);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!userData) return;
+
+    // Validation
+    if (editField === 'email' && editValue && !editValue.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+    if (editField === 'phoneNumber' && editValue && !editValue.match(/^\+?\d{7,15}$/)) {
+      setError('Please enter a valid phone number (e.g., +1234567890).');
+      return;
+    }
+    if (editField === 'gender' && editValue && !['Male', 'Female', 'Other'].includes(editValue)) {
+      setError('Please enter a valid gender (Male, Female, or Other).');
+      return;
+    }
+    if (editField === 'age' && editValue) {
+      const age = parseInt(editValue, 10);
+      if (isNaN(age) || age < 13 || age > 120) {
+        setError('Please enter a valid age (13–120).');
+        return;
+      }
+    }
+    if (editField === 'country' && editValue && !editValue.match(/^[A-Za-z\s]{2,}$/)) {
+      setError('Please enter a valid country name.');
+      return;
+    }
+    if (editField === 'bio' && editValue.length > 500) {
+      setError('Bio cannot exceed 500 characters.');
+      return;
+    }
+
+    const auth = getAuth();
+    const db = getFirestore();
+    const userDoc = doc(db, 'users', auth.currentUser.uid);
+
+    try {
+      const updateData = { [editField]: editValue };
+      await updateDoc(userDoc, updateData);
+      setUserData((prev) => ({ ...prev, [editField]: editValue || 'Not provided' }));
+      setIsEditModalOpen(false);
+      setEditField(null);
+      setEditValue('');
+      setError('');
+    } catch (err) {
+      console.error('Update error:', err.message);
+      setError('Failed to save changes. Please try again.');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditModalOpen(false);
+    setEditField(null);
+    setEditValue('');
+    setError('');
+  };
+
+  const getFieldConfig = () => {
+    switch (editField) {
+      case 'email':
+        return {
+          title: 'Email',
+          icon: <IoMailOutline size={32} />,
+          inputType: 'email',
+          isTextarea: false,
+          placeholder: 'Enter your email',
+        };
+      case 'phoneNumber':
+        return {
+          title: 'Phone Number',
+          icon: <IoCallOutline size={32} />,
+          inputType: 'tel',
+          isTextarea: false,
+          placeholder: 'Enter your phone number (e.g., +1234567890)',
+        };
+      case 'gender':
+        return {
+          title: 'Gender',
+          icon: <IoPersonOutline size={32} />,
+          inputType: 'text',
+          isTextarea: false,
+          placeholder: 'Enter gender (Male, Female, Other)',
+        };
+      case 'age':
+        return {
+          title: 'Age',
+          icon: <IoCalendarOutline size={32} />,
+          inputType: 'number',
+          isTextarea: false,
+          placeholder: 'Enter your age',
+        };
+      case 'country':
+        return {
+          title: 'Country',
+          icon: <IoGlobeOutline size={32} />,
+          inputType: 'text',
+          isTextarea: false,
+          placeholder: 'Enter your country',
+        };
+      case 'bio':
+        return {
+          title: 'Bio',
+          icon: <IoDocumentTextOutline size={32} />,
+          inputType: 'text',
+          isTextarea: true,
+          placeholder: 'Enter your bio',
+        };
+      default:
+        return null;
+    }
+  };
+
+  const renderEditModal = () => {
+    if (!isEditModalOpen || !editField) return null;
+    const fieldConfig = getFieldConfig();
+
+    if (!fieldConfig) return null;
+
+    return (
+      <div className="edit-modal-overlay" onClick={handleCancelEdit}>
+        <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="edit-modal-header">
+            <div className="edit-modal-icon">{fieldConfig.icon}</div>
+            <button
+              type="button"
+              className="edit-modal-close"
+              onClick={handleCancelEdit}
+              aria-label="Close edit modal"
+            >
+              <IoArrowBack size={24} />
+            </button>
+          </div>
+          <div className="edit-modal-content">
+            <h2 className="edit-modal-title">Edit {fieldConfig.title}</h2>
+            {fieldConfig.isTextarea ? (
+              <textarea
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                className="edit-modal-input edit-modal-textarea"
+                placeholder={fieldConfig.placeholder}
+                aria-label={`Edit ${fieldConfig.title.toLowerCase()}`}
+                autoFocus
+              />
+            ) : (
+              <input
+                type={fieldConfig.inputType}
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                className="edit-modal-input"
+                placeholder={fieldConfig.placeholder}
+                aria-label={`Edit ${fieldConfig.title.toLowerCase()}`}
+                autoFocus
+              />
+            )}
+            {error && <p className="edit-modal-error">{error}</p>}
+          </div>
+          <div className="edit-modal-footer">
+            <button
+              type="button"
+              className="edit-modal-save-button"
+              onClick={handleSaveEdit}
+              aria-label={`Change ${fieldConfig.title.toLowerCase()}`}
+            >
+              Change {fieldConfig.title}
+            </button>
+            <button
+              type="button"
+              className="edit-modal-cancel-button"
+              onClick={handleCancelEdit}
+              aria-label="Cancel edit"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  if (error && !isEditModalOpen) {
     return (
       <div className="error-message">
         <p>{error}</p>
@@ -79,6 +276,17 @@ function Account() {
 
   return (
     <div className="account-container">
+      <div className="account-header">
+        <button
+          type="button"
+          className="back-button"
+          onClick={handleBackClick}
+          aria-label="Go back"
+        >
+          <IoArrowBack size={24} />
+        </button>
+        <h1 className="account-title">Account</h1>
+      </div>
       {isLoading ? (
         <div className="skeleton-container">
           <div className="skeleton-avatar"></div>
@@ -90,7 +298,7 @@ function Account() {
       ) : (
         userData && (
           <>
-            <div className="account-header">
+            <div className="account-header-content">
               <div className="account-avatar-wrapper">
                 <img
                   src={userData.photoURL}
@@ -145,7 +353,7 @@ function Account() {
                 <button
                   type="button"
                   className="account-detail-edit"
-                  onClick={() => handleEdit('email')}
+                  onClick={() => handleEditClick('email', userData.email)}
                   aria-label="Edit email"
                 >
                   <IoPencilOutline size={18} />
@@ -157,7 +365,7 @@ function Account() {
                 <button
                   type="button"
                   className="account-detail-edit"
-                  onClick={() => handleEdit('phoneNumber')}
+                  onClick={() => handleEditClick('phoneNumber', userData.phoneNumber)}
                   aria-label="Edit phone number"
                 >
                   <IoPencilOutline size={18} />
@@ -169,7 +377,7 @@ function Account() {
                 <button
                   type="button"
                   className="account-detail-edit"
-                  onClick={() => handleEdit('gender')}
+                  onClick={() => handleEditClick('gender', userData.gender)}
                   aria-label="Edit gender"
                 >
                   <IoPencilOutline size={18} />
@@ -181,7 +389,7 @@ function Account() {
                 <button
                   type="button"
                   className="account-detail-edit"
-                  onClick={() => handleEdit('age')}
+                  onClick={() => handleEditClick('age', userData.age)}
                   aria-label="Edit age"
                 >
                   <IoPencilOutline size={18} />
@@ -193,7 +401,7 @@ function Account() {
                 <button
                   type="button"
                   className="account-detail-edit"
-                  onClick={() => handleEdit('country')}
+                  onClick={() => handleEditClick('country', userData.country)}
                   aria-label="Edit country"
                 >
                   <IoPencilOutline size={18} />
@@ -205,13 +413,14 @@ function Account() {
                 <button
                   type="button"
                   className="account-detail-edit"
-                  onClick={() => handleEdit('bio')}
+                  onClick={() => handleEditClick('bio', userData.bio)}
                   aria-label="Edit bio"
                 >
                   <IoPencilOutline size={18} />
                 </button>
               </div>
             </div>
+            {renderEditModal()}
           </>
         )
       )}
