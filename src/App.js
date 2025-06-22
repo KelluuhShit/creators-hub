@@ -23,6 +23,7 @@ import SignInPage from './signin/SignInPage';
 import SignUpPage from './signin/SignUpPage';
 import VerifyAccountPage from './verify/VerifyAccountPage';
 import VerifyEmailPage from './verify/VerifyEmailPage';
+import Loader from './components/Loader'; // Import the new Loader component
 import './App.css';
 
 function Layout({ user, isVerified }) {
@@ -95,7 +96,7 @@ function App() {
   }, []);
 
   if (loading) {
-    return <div className="loading-screen">Loading...</div>;
+    return <Loader />; // Render the new Loader component
   }
 
   return (

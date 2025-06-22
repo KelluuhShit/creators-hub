@@ -49,12 +49,6 @@ function Profile() {
         });
 
         setIsPremium(data.isPremium ?? false);
-
-        setPosts([
-          { id: '1', image: 'https://images.pexels.com/photos/7480538/pexels-photo-7480538.jpeg?auto=compress&cs=tinysrgb&w=600' },
-          { id: '2', image: 'https://images.pexels.com/photos/5053846/pexels-photo-5053846.jpeg?auto=compress&cs=tinysrgb&w=600' },
-          { id: '3', image: 'https://images.pexels.com/photos/3850220/pexels-photo-3850220.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        ]);
       } catch (err) {
         console.error('Profile fetch error:', err.message);
         setError('Failed to load profile. Please try again.');
@@ -101,6 +95,10 @@ function Profile() {
       if (path === '/free-analytics') {
         navigate(isPremium ? '/monitor' : '/free-analytics');
       } else if (path === '/revenue') {
+        if (!isPremium) {
+          setError('Revenue statistics are available for premium accounts only.');
+          return;
+        }
         navigate('/revenue', { state: { from: pathname } });
       } else if (path === '/settings') {
         toggleSettingsModal();
@@ -177,7 +175,8 @@ function Profile() {
                 className="menu-button"
                 onClick={() => handleMenuNavigation('/revenue')}
                 title={isPremium ? '' : 'Available for premium accounts only'}
-                aria-label="View revenue statistics"
+                aria-label={isPremium ? 'View revenue statistics' : 'View revenue statistics (premium accounts only)'}
+                disabled={!isPremium || isLoading}
               >
                 Revenue
               </button>
