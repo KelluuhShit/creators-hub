@@ -281,6 +281,7 @@
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
+  min-height: 300px;
   gap: 12px;
 }
 

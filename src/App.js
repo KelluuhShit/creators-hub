@@ -12,6 +12,7 @@ import Success from './components/Success';
 import ChooseAccount from './components/ChooseAccount';
 import AccountSelections from './components/AccountSelections';
 import ConfirmWithdraw from './components/ConfirmWithdraw';
+import Account from './components/Account'; // Already imported
 import Subscribe from './subscribe/Subscribe';
 import Monitor from './subscribe/premium/Monitor';
 import Create from './pages/Create';
@@ -23,7 +24,7 @@ import SignInPage from './signin/SignInPage';
 import SignUpPage from './signin/SignUpPage';
 import VerifyAccountPage from './verify/VerifyAccountPage';
 import VerifyEmailPage from './verify/VerifyEmailPage';
-import Loader from './components/Loader'; // Import the new Loader component
+import Loader from './components/Loader';
 import './App.css';
 
 function Layout({ user, isVerified }) {
@@ -96,7 +97,7 @@ function App() {
   }, []);
 
   if (loading) {
-    return <Loader />; // Render the new Loader component
+    return <Loader />;
   }
 
   return (
@@ -171,6 +172,10 @@ function App() {
             <Route
               path="/profile"
               element={user && isVerified ? <Profile /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
+            />
+            <Route
+              path="/account"
+              element={user && isVerified ? <Account /> : <Navigate to={user ? "/verify-account" : "/signin"} />}
             />
             <Route
               path="/account-information"

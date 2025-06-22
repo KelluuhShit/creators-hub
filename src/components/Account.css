@@ -1,0 +1,440 @@
+/* Container for the entire account page */
+.account-container {
+  max-width: 700px;
+  width: 90%;
+  margin: 30px auto;
+  padding: 25px;
+  background-color: #f9f9f9; /* Light gray background for distinction */
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+/* Header section for avatar and user info */
+.account-header {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+/* Avatar wrapper with a blue gradient */
+.account-avatar-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(45deg, #007bff, #00b7eb, #00d4b8);
+  border-radius: 50%;
+  padding: 4px;
+}
+
+/* Avatar image */
+.account-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  object-fit: cover;
+}
+
+/* User info container */
+.account-info {
+  flex: 1;
+}
+
+/* Username wrapper */
+.account-username-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* Username styling */
+.account-username {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #222;
+}
+
+/* Verified icon */
+.account-verified {
+  color: #00b7eb;
+  font-size: 1.3rem;
+}
+
+/* Connect Instagram button */
+.connect-instagram-button {
+  background: linear-gradient(90deg, #007bff, #00b7eb, #00d4b8);
+  color: #fff;
+  font-size: clamp(0.9rem, 1.7vw, 1rem);
+  font-weight: 600;
+  padding: clamp(10px, 2vw, 12px) clamp(18px, 3.5vw, 22px);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.connect-instagram-button:hover {
+  background: linear-gradient(90deg, #0056b3, #0097c7, #00b7a2);
+  box-shadow: 0 2px 10px rgba(0, 123, 255, 0.3);
+}
+
+.connect-instagram-button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Stats section */
+.account-stats {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 12px;
+}
+
+/* Individual stat */
+.account-stat {
+  text-align: center;
+}
+
+/* Stat value */
+.account-stat-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #222;
+}
+
+/* Stat label */
+.account-stat-label {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Details section */
+.account-details {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Individual detail item */
+.account-detail-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: #ffffff; /* White background for contrast */
+  border-radius: 10px;
+  border: 1px solid #e0e4e8;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Detail label */
+.account-detail-label {
+  font-size: clamp(1rem, 1.9vw, 1.1rem);
+  font-weight: 600;
+  color: #222;
+  flex: 0 0 130px;
+}
+
+/* Detail value */
+.account-detail-value {
+  font-size: clamp(1rem, 1.9vw, 1.1rem);
+  color: #555;
+  flex: 1;
+  text-align: left;
+}
+
+/* Edit button */
+.account-detail-edit {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.account-detail-edit:hover {
+  background: #e8f0fe;
+  color: #007bff;
+}
+
+.account-detail-edit:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+}
+
+/* Error message */
+.error-message {
+  color: #d32f2f;
+  font-size: clamp(0.9rem, 1.7vw, 1rem);
+  text-align: center;
+  margin: 25px 0;
+  padding: 12px;
+  background: #ffebee;
+  border-radius: 6px;
+}
+
+.error-message button {
+  background: #d32f2f;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.2s ease;
+}
+
+.error-message button:hover {
+  background: #b71c1c;
+}
+
+.error-message button:focus {
+  outline: 2px solid #d32f2f;
+  outline-offset: 2px;
+}
+
+/* Skeleton loading states */
+.skeleton-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.skeleton-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  margin: 0 auto 12px;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-username {
+  width: 160px;
+  height: 22px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  margin: 0 auto 12px;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-bio {
+  width: 220px;
+  height: 16px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  margin: 0 auto 12px;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-stats {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-bottom: 12px;
+}
+
+.skeleton-stat {
+  width: 70px;
+  height: 40px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-details {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.skeleton-details::before {
+  content: '';
+  width: 100%;
+  height: 45px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Shimmer animation */
+@keyframes shimmer {
+  0% {
+    background: linear-gradient(to right, #e0e0e0 0%, #f0f0f0 50%, #e0e0e0 100%);
+    background-position: -100%;
+  }
+  100% {
+    background-position: 100%;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .account-container {
+    width: 95%;
+    padding: 18px;
+    margin: 15px auto;
+  }
+
+  .account-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .account-avatar-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+
+  .account-username {
+    font-size: 1.3rem;
+  }
+
+  .connect-instagram-button {
+    padding: clamp(8px, 1.8vw, 10px) clamp(15px, 3vw, 20px);
+    font-size: clamp(0.85rem, 1.6vw, 0.95rem);
+  }
+
+  .account-stats {
+    gap: 15px;
+  }
+
+  .account-stat-value {
+    font-size: 1rem;
+  }
+
+  .account-stat-label {
+    font-size: 0.8rem;
+  }
+
+  .account-details {
+    margin-top: 20px;
+    gap: 12px;
+  }
+
+  .account-detail-item {
+    padding: 12px 14px;
+  }
+
+  .account-detail-label,
+  .account-detail-value {
+    font-size: clamp(0.9rem, 1.7vw, 0.95rem);
+  }
+
+  .account-detail-label {
+    flex: 0 0 100px;
+  }
+
+  .account-detail-edit {
+    padding: 8px;
+  }
+
+  .skeleton-avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .skeleton-username {
+    width: 130px;
+    height: 18px;
+  }
+
+  .skeleton-bio {
+    width: 180px;
+    height: 14px;
+  }
+
+  .skeleton-stat {
+    width: 60px;
+    height: 35px;
+  }
+
+  .skeleton-details::before {
+    height: 40px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .account-container {
+    width: 92%;
+    padding: 20px;
+  }
+
+  .account-header {
+    gap: 20px;
+  }
+
+  .account-avatar-wrapper {
+    width: 90px;
+    height: 90px;
+  }
+
+  .account-username {
+    font-size: 1.45rem;
+  }
+
+  .connect-instagram-button {
+    padding: clamp(9px, 1.9vw, 11px) clamp(16px, 3.2vw, 20px);
+    font-size: clamp(0.9rem, 1.7vw, 1rem);
+  }
+
+  .account-stats {
+    gap: 20px;
+  }
+
+  .account-stat-value {
+    font-size: 1.1rem;
+  }
+
+  .account-stat-label {
+    font-size: 0.85rem;
+  }
+
+  .account-details {
+    margin-top: 22px;
+    gap: 14px;
+  }
+
+  .account-detail-item {
+    padding: 13px 16px;
+  }
+
+  .account-detail-label,
+  .account-detail-value {
+    font-size: clamp(0.95rem, 1.8vw, 1rem);
+  }
+
+  .account-detail-label {
+    flex: 0 0 120px;
+  }
+
+  .skeleton-avatar {
+    width: 90px;
+    height: 90px;
+  }
+
+  .skeleton-username {
+    width: 150px;
+    height: 20px;
+  }
+
+  .skeleton-bio {
+    height: 15px;
+  }
+
+  .skeleton-stat {
+    width: 65px;
+    height: 38px;
+  }
+
+  .skeleton-details::before {
+    height: 42px;
+  }
+}

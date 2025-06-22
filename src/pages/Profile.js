@@ -93,7 +93,11 @@ function Profile() {
     setIsMenuOpen(false);
     try {
       if (path === '/free-analytics') {
-        navigate(isPremium ? '/monitor' : '/free-analytics');
+        if (!isPremium) {
+          setError('Analytics are available for premium accounts only.');
+          return;
+        }
+        navigate('/monitor');
       } else if (path === '/revenue') {
         if (!isPremium) {
           setError('Revenue statistics are available for premium accounts only.');
@@ -151,22 +155,16 @@ function Profile() {
         <div className="bottom-sheet-overlay" onClick={handleOverlayClick}>
           <div className="bottom-sheet" onClick={(e) => e.stopPropagation()}>
             <div className="bottom-sheet-header">
-              <span className="bottom-sheet-handle"></span>
-              <button
-                type="button"
-                className="bottom-sheet-close"
-                onClick={toggleMenu}
-                aria-label="Close bottom sheet"
-              >
-                <IoCloseOutline size={24} />
-              </button>
+              <span className="bottom-sheet-handle" onClick={toggleMenu}></span>
             </div>
             <div className="bottom-sheet-content">
               <button
                 type="button"
                 className="menu-button"
                 onClick={() => handleMenuNavigation('/free-analytics')}
-                aria-label="View analytics dashboard"
+                title={isPremium ? '' : 'Available for premium accounts only'}
+                aria-label={isPremium ? 'View analytics dashboard' : 'View analytics dashboard (premium accounts only)'}
+                disabled={!isPremium || isLoading}
               >
                 Analytics
               </button>
