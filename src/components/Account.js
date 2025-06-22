@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { onAuthStateChanged, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import {
   IoCheckmarkCircle,
   IoPencilOutline,
@@ -13,6 +13,7 @@ import {
   IoGlobeOutline,
   IoDocumentTextOutline,
 } from 'react-icons/io5';
+import { auth, db } from '../services/firebase';
 import './Account.css';
 
 function Account() {
@@ -23,10 +24,12 @@ function Account() {
   const [editField, setEditField] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
+  const [otpValue, setOtpValue] = useState('');
+  const [confirmationResult, setConfirmationResult] = useState(null);
 
+  // Fetch user data
   useEffect(() => {
-    const auth = getAuth();
-    const db = getFirestore();
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
         setError('User not authenticated. Please sign in.');
@@ -70,6 +73,41 @@ function Account() {
     return () => unsubscribe();
   }, [navigate]);
 
+  // Initialize reCAPTCHA
+  useEffect(() => {
+    const recaptchaContainer = document.getElementById('recaptcha-container');
+    if (!recaptchaContainer) {
+      setError('reCAPTCHA container not found. Please try again.');
+      return;
+    }
+
+    if (!window.recaptchaVerifier && auth) {
+      try {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+          size: 'invisible',
+          callback: () => {
+            // reCAPTCHA solved
+          },
+        });
+
+        // Enable testing mode if configured
+        if (process.env.REACT_APP_FIREBASE_TESTING === 'true') {
+          auth.settings.appVerificationDisabledForTesting = true;
+        }
+      } catch (err) {
+        console.error('reCAPTCHA initialization error:', err.message);
+        setError('Failed to initialize reCAPTCHA. Please try again.');
+      }
+    }
+
+    return () => {
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = null;
+      }
+    };
+  }, []);
+
   const handleConnectInstagram = () => {
     console.log('Initiate Instagram connection');
   };
@@ -84,16 +122,27 @@ function Account() {
     setIsEditModalOpen(true);
   };
 
+  const normalizePhoneNumber = (input) => {
+    let cleaned = input.replace(/\D/g, ''); // Remove non-digits
+    if (cleaned.startsWith('0') && cleaned.length === 10) {
+      // Convert 0712345678 or 0112345678 to +254712345678
+      cleaned = `+254${cleaned.slice(1)}`;
+    } else if (!cleaned.startsWith('+254') && cleaned.length === 9) {
+      // Convert 712345678 to +254712345678
+      cleaned = `+254${cleaned}`;
+    } else if (!cleaned.startsWith('+254') && cleaned.length > 9) {
+      // Assume +254 was omitted, take last 9 digits
+      cleaned = `+254${cleaned.slice(-9)}`;
+    }
+    return cleaned;
+  };
+
   const handleSaveEdit = async () => {
     if (!userData) return;
 
     // Validation
     if (editField === 'email' && editValue && !editValue.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
       setError('Please enter a valid email address.');
-      return;
-    }
-    if (editField === 'phoneNumber' && editValue && !editValue.match(/^\+?\d{7,15}$/)) {
-      setError('Please enter a valid phone number (e.g., +1234567890).');
       return;
     }
     if (editField === 'gender' && editValue && !['Male', 'Female', 'Other'].includes(editValue)) {
@@ -116,28 +165,85 @@ function Account() {
       return;
     }
 
-    const auth = getAuth();
-    const db = getFirestore();
-    const userDoc = doc(db, 'users', auth.currentUser.uid);
+    if (editField === 'phoneNumber') {
+      // Normalize and validate phone number
+      const normalizedNumber = normalizePhoneNumber(editValue);
+      if (!normalizedNumber.match(/^\+254\d{9}$/)) {
+        setError('Please enter a valid Kenyan phone number (e.g., 0712345678 or +254712345678).');
+        return;
+      }
+
+      // Initiate SMS verification
+      try {
+        if (!window.recaptchaVerifier) {
+          throw new Error('reCAPTCHA not initialized.');
+        }
+        const confirmation = await signInWithPhoneNumber(auth, normalizedNumber, window.recaptchaVerifier);
+        setConfirmationResult(confirmation);
+        setEditValue(normalizedNumber); // Update editValue to show normalized number
+        setIsEditModalOpen(false);
+        setIsOtpModalOpen(true);
+        setError('');
+      } catch (err) {
+        console.error('SMS send error:', err.message);
+        if (err.code === 'auth/billing-not-enabled') {
+          setError('Phone verification is not available due to billing restrictions. Please contact support.');
+        } else if (err.code === 'auth/operation-not-allowed') {
+          setError('Phone authentication is not enabled. Please contact support.');
+        } else if (err.code === 'auth/too-many-requests') {
+          setError('Too many attempts. Please try again later.');
+        } else if (err.code === 'auth/invalid-phone-number') {
+          setError('Invalid phone number format.');
+        } else {
+          setError('Failed to send verification code. Please try again.');
+        }
+      }
+    } else {
+      // Update other fields directly
+      const userDoc = doc(db, auth.currentUser.uid);
+
+      try {
+        const updateData = { [editField]: editValue };
+        await updateDoc(userDoc, updateData);
+        setUserData((prev) => ({ ...prev, [editField]: editValue || 'Not provided' }));
+        setIsEditModalOpen(false);
+        setEditField(null);
+        setEditValue('');
+        setError('');
+      } catch (err) {
+        console.error('Update error:', err.message);
+        setError('Failed to save changes. Please try again.');
+      }
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!confirmationResult || !otpValue) return;
 
     try {
-      const updateData = { [editField]: editValue };
-      await updateDoc(userDoc, updateData);
-      setUserData((prev) => ({ ...prev, [editField]: editValue || 'Not provided' }));
-      setIsEditModalOpen(false);
+      await confirmationResult.confirm(otpValue);
+      const userDoc = doc(db, auth.currentUser.uid);
+      await updateDoc(userDoc, { phoneNumber: editValue });
+      setUserData((prev) => ({ ...prev, phoneNumber: editValue }));
+      setIsOtpModalOpen(false);
       setEditField(null);
       setEditValue('');
+      setOtpValue('');
+      setConfirmationResult(null);
       setError('');
     } catch (err) {
-      console.error('Update error:', err.message);
-      setError('Failed to save changes. Please try again.');
+      console.error('OTP verification error:', err.message);
+      setError('Invalid verification code. Please try again.');
     }
   };
 
   const handleCancelEdit = () => {
     setIsEditModalOpen(false);
+    setIsOtpModalOpen(false);
     setEditField(null);
     setEditValue('');
+    setOtpValue('');
+    setConfirmationResult(null);
     setError('');
   };
 
@@ -157,7 +263,7 @@ function Account() {
           icon: <IoCallOutline size={32} />,
           inputType: 'tel',
           isTextarea: false,
-          placeholder: 'Enter your phone number (e.g., +1234567890)',
+          placeholder: 'Enter phone number (e.g., 0712345678)',
         };
       case 'gender':
         return {
@@ -218,6 +324,11 @@ function Account() {
           </div>
           <div className="edit-modal-content">
             <h2 className="edit-modal-title">Edit {fieldConfig.title}</h2>
+            {editField === 'phoneNumber' && (
+              <p className="edit-modal-info">
+                Enter your Kenyan phone number (e.g., 0712345678). You will receive an SMS with a verification code. Standard rates may apply.
+              </p>
+            )}
             {fieldConfig.isTextarea ? (
               <textarea
                 value={editValue}
@@ -247,7 +358,7 @@ function Account() {
               onClick={handleSaveEdit}
               aria-label={`Change ${fieldConfig.title.toLowerCase()}`}
             >
-              Change {fieldConfig.title}
+              {editField === 'phoneNumber' ? 'Send Verification Code' : `Change ${fieldConfig.title}`}
             </button>
             <button
               type="button"
@@ -263,7 +374,65 @@ function Account() {
     );
   };
 
-  if (error && !isEditModalOpen) {
+  const renderOtpModal = () => {
+    if (!isOtpModalOpen) return null;
+
+    return (
+      <div className="edit-modal-overlay" onClick={handleCancelEdit}>
+        <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="edit-modal-header">
+            <div className="edit-modal-icon">
+              <IoCallOutline size={32} />
+            </div>
+            <button
+              type="button"
+              className="edit-modal-close"
+              onClick={handleCancelEdit}
+              aria-label="Close OTP modal"
+            >
+              <IoArrowBack size={24} />
+            </button>
+          </div>
+          <div className="edit-modal-content">
+            <h2 className="edit-modal-title">Verify Phone Number</h2>
+            <p className="edit-modal-info">
+              Enter the 6-digit code sent to {editValue}.
+            </p>
+            <input
+              type="text"
+              value={otpValue}
+              onChange={(e) => setOtpValue(e.target.value)}
+              className="edit-modal-input"
+              placeholder="Enter 6-digit code"
+              aria-label="Enter verification code"
+              autoFocus
+            />
+            {error && <p className="edit-modal-error">{error}</p>}
+          </div>
+          <div className="edit-modal-footer">
+            <button
+              type="button"
+              className="edit-modal-save-button"
+              onClick={handleVerifyOtp}
+              aria-label="Verify code"
+            >
+              Verify Code
+            </button>
+            <button
+              type="button"
+              className="edit-modal-cancel-button"
+              onClick={handleCancelEdit}
+              aria-label="Cancel verification"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  if (error && !isEditModalOpen && !isOtpModalOpen) {
     return (
       <div className="error-message">
         <p>{error}</p>
@@ -421,9 +590,11 @@ function Account() {
               </div>
             </div>
             {renderEditModal()}
+            {renderOtpModal()}
           </>
         )
       )}
+      <div id="recaptcha-container"></div>
     </div>
   );
 }
