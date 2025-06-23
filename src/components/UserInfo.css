@@ -1,6 +1,6 @@
 /* src/pages/UserInfo.css */
 .user-info-container {
-  max-width: 720px; /* Matches Profile.css */
+  max-width: 720px;
   width: 95%;
   margin: 24px auto;
   padding: clamp(20px, 3vw, 24px);
@@ -8,8 +8,8 @@
   border-radius: 12px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
-  min-height: calc(100vh - 80px); /* Space for navbar */
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; /* Matches Profile.css */
+  min-height: calc(100vh - 80px);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .user-info-header {
@@ -43,7 +43,7 @@
 .user-info-title {
   font-size: clamp(1.5rem, 2.5vw, 1.75rem);
   font-weight: 700;
-  color: #1f2a44; /* Matches Profile.css */
+  color: #1f2a44;
   margin: 0;
 }
 
@@ -58,19 +58,30 @@
   justify-content: space-between;
   align-items: center;
   padding: clamp(12px, 2vw, 16px) 0;
-  border-bottom: 1px solid #e2e8f0; /* Matches Profile.css */
+  border-bottom: 1px solid #e2e8f0;
   transition: background 0.3s;
 }
 
 .user-info-item:hover {
-  background: #f8fafc; /* Subtle hover effect */
+  background: #f8fafc;
+}
+
+.label-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 140px;
+}
+
+.user-info-icon {
+  color: #833ab4; /* Instagram purple */
+  transition: color 0.3s;
 }
 
 .user-info-label {
   font-size: clamp(0.95rem, 1.8vw, 1rem);
   font-weight: 600;
-  color: #475569; /* Matches Profile.css */
-  flex: 0 0 140px; /* Slightly wider for alignment */
+  color: #475569;
 }
 
 .user-info-value, .user-info-link {
@@ -81,7 +92,7 @@
 }
 
 .user-info-link {
-  color: #0095f6; /* Instagram blue */
+  color: #0095f6;
   text-decoration: none;
   transition: color 0.3s;
 }
@@ -127,7 +138,7 @@
 }
 
 .upgrade-button, .connect-button {
-  background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcaf45); /* Instagram gradient */
+  background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcaf45);
   color: #ffffff;
   font-size: clamp(0.9rem, 1.6vw, 0.95rem);
   font-weight: 600;
@@ -152,7 +163,7 @@
 }
 
 .error-message {
-  color: #dc2626; /* Matches Profile.css */
+  color: #dc2626;
   font-size: clamp(0.85rem, 1.6vw, 0.9rem);
   text-align: center;
   margin: 1.5rem 0;
@@ -189,7 +200,7 @@
 .skeleton-item {
   width: 100%;
   height: 48px;
-  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%); /* Matches Profile.css */
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
   background-size: 200%;
   border-radius: 8px;
   animation: shimmer 1.5s infinite;
@@ -225,7 +236,7 @@
   justify-content: space-between;
   align-items: center;
   padding: clamp(12px, 2vw, 16px) clamp(16px, 3vw, 20px);
-  border-bottom: 1px solid #e2e8f0; /* Matches Profile.css */
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .edit-modal-icon {
@@ -235,7 +246,7 @@
 .edit-modal-close {
   background: none;
   border: none;
-  color: #475569; /* Matches Profile.css */
+  color: #475569;
   cursor: pointer;
   padding: 8px;
   border-radius: 50%;
@@ -261,7 +272,7 @@
 .edit-modal-title {
   font-size: clamp(1.25rem, 2.5vw, 1.5rem);
   font-weight: 700;
-  color: #1f2a44; /* Matches Profile.css */
+  color: #1f2a44;
   margin: 0 0 12px;
 }
 
@@ -301,7 +312,7 @@
 }
 
 .edit-modal-save-button {
-  background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcaf45); /* Instagram gradient */
+  background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcaf45);
   color: #ffffff;
   font-size: clamp(0.9rem, 1.6vw, 0.95rem);
   font-weight: 600;
@@ -365,7 +376,7 @@
     font-size: clamp(0.9rem, 1.6vw, 0.95rem);
   }
 
-  .user-info-label {
+  .label-container {
     flex: 0 0 120px;
   }
 
@@ -407,7 +418,7 @@
     font-size: clamp(0.95rem, 1.8vw, 1rem);
   }
 
-  .user-info-label {
+  .label-container {
     flex: 0 0 130px;
   }
 

@@ -3,6 +3,8 @@ import { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, BarElement, PointElement, LinearScale, CategoryScale, Title, Legend, Tooltip } from 'chart.js';
+import { IoArrowBack } from 'react-icons/io5'; // Import back icon
+import '../subscribe/premium/Monitor.css'; // Import Monitor.css for tabs
 import './Revenue.css';
 
 // Register Chart.js components
@@ -12,7 +14,8 @@ function Revenue() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [timePeriod, setTimePeriod] = useState('month');
-  const [balance, setBalance] = useState(null); // Store balance
+  const [balance, setBalance] = useState(null);
+  const activeTab = state?.activeTab || 'revenue'; // Default to Revenue tab
 
   const timePeriods = ['year', 'month', 'week', 'day'];
   const RPM = 0.5; // Revenue Per Mille ($0.5 per 1000 impressions)
@@ -84,7 +87,7 @@ function Revenue() {
   const calculateRevenue = () => {
     const promotedViews = charts[0].data.datasets[0].data;
     const totalImpressions = promotedViews.reduce((acc, val) => acc + val, 0);
-    return (totalImpressions / 1000) * RPM; // Return numeric value
+    return (totalImpressions / 1000) * RPM;
   };
 
   // Use calculated revenue if no balance set
@@ -105,13 +108,12 @@ function Revenue() {
     };
   }, [charts]);
 
+  // Handle back navigation
   const handleBackClick = () => {
-    // Check if navigation state contains 'from' route
     if (state?.from) {
-      navigate(state.from);
+      navigate(state.from, { state: { activeTab: 'statistics' } });
     } else {
-      // Fall back to history stack or default to /monitor
-      navigate(-1, { replace: true });
+      navigate('/monitor', { state: { activeTab: 'statistics' } });
     }
   };
 
@@ -121,10 +123,28 @@ function Revenue() {
 
   return (
     <div className="revenue-container">
+      <div className="monitor-tabs">
+        <button
+          className={`tab-button ${activeTab === 'statistics' ? 'active' : ''}`}
+          onClick={() => navigate('/monitor', { state: { activeTab: 'statistics' } })}
+          aria-selected={activeTab === 'statistics'}
+          aria-label="View statistics dashboard"
+        >
+          Statistics
+        </button>
+        <button
+          className={`tab-button ${activeTab === 'revenue' ? 'active' : ''}`}
+          onClick={() => navigate('/revenue', { state: { activeTab: 'revenue' } })}
+          aria-selected={activeTab === 'revenue'}
+          aria-label="View revenue dashboard"
+        >
+          Revenue
+        </button>
+      </div>
       <div className="revenue-header">
-        <h4 className="revenue-title">Revenue Statistics</h4>
-        <button className="back-button" onClick={handleBackClick} aria-label="Go back to previous page">
-          Back
+        <h4 className="revenue-title">Revenue Dashboard</h4>
+        <button className="back-button" onClick={handleBackClick} aria-label="Go back">
+          <IoArrowBack /> Back
         </button>
       </div>
       <h5 className="estimated-revenue-title">Estimated Revenue</h5>

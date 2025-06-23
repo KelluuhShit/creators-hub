@@ -57,7 +57,6 @@
   padding: 15px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
-  border-left: 4px solid #833ab4;
 }
 
 .metric-item {
@@ -89,7 +88,6 @@
   border-radius: 12px;
   padding: clamp(16px, 3vw, 20px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  border-left: 4px solid #1f2a44;
   transition: transform 0.3s, box-shadow 0.3s;
 }
 

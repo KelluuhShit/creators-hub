@@ -13,7 +13,8 @@ function Monitor() {
   const [isLoading, setIsLoading] = useState(true);
   const [timePeriod, setTimePeriod] = useState('month');
   const [error, setError] = useState(null);
-  const [modalChart, setModalChart] = useState(null); // State for modal
+  const [modalChart, setModalChart] = useState(null);
+  const [activeTab, setActiveTab] = useState('statistics');
   const navigate = useNavigate();
 
   // Simulate loading delay (replace with API call later)
@@ -37,7 +38,7 @@ function Monitor() {
       backgroundColor,
       borderWidth: 1,
       borderRadius: 3,
-      barThickness: 20, // Narrow bars
+      barThickness: 20,
     }],
   });
 
@@ -57,26 +58,26 @@ function Monitor() {
 
   // Compute card metrics
   const getCardMetrics = (data, title) => {
-    const sum = data.reduce((acc, val) => acc + val, 0); // Total count
-    const first = data[0] || 0; // Default to 0 if no data
-    const last = data[data.length - 1] || 0; // Default to 0 if no data
-    const percentageChange = first !== 0 ? ((last - first) / first * 100).toFixed(1) : 0; // Percentage change
+    const sum = data.reduce((acc, val) => acc + val, 0);
+    const first = data[0] || 0;
+    const last = data[data.length - 1] || 0;
+    const percentageChange = first !== 0 ? ((last - first) / first * 100).toFixed(1) : 0;
     let trend, trendIcon, trendColor;
     if (last > first * 1.05) {
       trend = 'Up';
       trendIcon = <IoArrowUp />;
-      trendColor = '#28a745'; // Green
+      trendColor = '#28a745';
     } else if (last < first * 0.95) {
       trend = 'Down';
       trendIcon = <IoArrowDown />;
-      trendColor = '#dc3545'; // Red
+      trendColor = '#dc3545';
     } else {
       trend = 'Stable';
       trendIcon = <IoRemove />;
-      trendColor = '#ffc107'; // Yellow
+      trendColor = '#ffc107';
     }
-    const value = Math.round(sum).toLocaleString(); // Format total count
-    return { value, trend, trendIcon, trendColor, percentageChange }; // Include trend
+    const value = Math.round(sum).toLocaleString();
+    return { value, trend, trendIcon, trendColor, percentageChange };
   };
 
   // Mock descriptions for each metric
@@ -146,10 +147,14 @@ function Monitor() {
     },
   ], [timePeriod]);
 
-  const handleRevenueClick = () => navigate('/revenue');
-
   const handleOpenModal = (chart) => setModalChart(chart);
   const handleCloseModal = () => setModalChart(null);
+
+  // Handle Revenue tab click
+  const handleRevenueTabClick = () => {
+    setActiveTab('revenue');
+    navigate('/revenue');
+  };
 
   return (
     <div className="monitor-container">
@@ -172,66 +177,82 @@ function Monitor() {
         <div className="error-message">Error: {error}</div>
       ) : (
         <>
-          <div className="monitor-header">
-            <h4 className="monitor-title">Statistics Dashboard</h4>
-            <button className="open-revenue" onClick={handleRevenueClick} aria-label="View revenue statistics">
+          <div className="monitor-tabs">
+            <button
+              className={`tab-button ${activeTab === 'statistics' ? 'active' : ''}`}
+              onClick={() => setActiveTab('statistics')}
+              aria-selected={activeTab === 'statistics'}
+              aria-label="View statistics dashboard"
+            >
+              Statistics
+            </button>
+            <button
+              className={`tab-button ${activeTab === 'revenue' ? 'active' : ''}`}
+              onClick={handleRevenueTabClick}
+              aria-selected={activeTab === 'revenue'}
+              aria-label="View revenue dashboard"
+            >
               Revenue
             </button>
           </div>
-          <div className="time-period-buttons">
-            {timePeriods.map((period) => (
-              <button
-                key={period}
-                className={`time-period-button ${timePeriod === period ? 'active' : ''}`}
-                onClick={() => setTimePeriod(period)}
-                aria-pressed={timePeriod === period}
-                aria-label={`View statistics for ${period}`}
-              >
-                {period.charAt(0).toUpperCase() + period.slice(1)}
-              </button>
-            ))}
-          </div>
-          <div className="chart-scroll-container">
-            <div className="chart-row">
-              {charts.map((chart, index) => (
-                <div key={index} className="chart-container">
-                  <div className="chart-wrapper">
-                    <Bar
-                      data={chart.data}
-                      options={{ ...chartOptions, plugins: { ...chartOptions.plugins, title: { ...chartOptions.plugins.title, text: chart.title } } }}
-                      height={200}
-                    />
-                  </div>
+          {activeTab === 'statistics' && (
+            <>
+              <div className="time-period-buttons">
+                {timePeriods.map((period) => (
+                  <button
+                    key={period}
+                    className={`time-period-button ${timePeriod === period ? 'active' : ''}`}
+                    onClick={() => setTimePeriod(period)}
+                    aria-pressed={timePeriod === period}
+                    aria-label={`View statistics for ${period}`}
+                  >
+                    {period.charAt(0).toUpperCase() + period.slice(1)}
+                  </button>
+                ))}
+              </div>
+              <div className="chart-scroll-container">
+                <div className="chart-row">
+                  {charts.map((chart, index) => (
+                    <div key={index} className="chart-container">
+                      <div className="chart-wrapper">
+                        <Bar
+                          data={chart.data}
+                          options={{ ...chartOptions, plugins: { ...chartOptions.plugins, title: { ...chartOptions.plugins.title, text: chart.title } } }}
+                          height={200}
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-          <div className="card-grid">
-            {charts.map((chart, index) => {
-              const { value, trend, trendIcon, trendColor, percentageChange } = getCardMetrics(chart.data.datasets[0].data, chart.title);
-              return (
-                <div key={index} className="monitor-card" style={{ borderLeft: `4px solid ${chart.color}` }}>
-                  <div className="monitor-card-header">
-                    <h2 className="monitor-card-title">{chart.title.replace(' Chart', '')}</h2>
-                    <button
-                      className="info-icon"
-                      onClick={() => handleOpenModal(chart)}
-                      aria-label={`View details for ${chart.title.replace(' Chart', '')}`}
-                    >
-                      <IoInformationCircleOutline />
-                    </button>
-                  </div>
-                  <div className="monitor-card-metrics" aria-label={`${value} total, ${trend} trend, ${percentageChange}% change`}>
-                    <span className="monitor-card-value">{value}</span>
-                    <span className="monitor-card-trend" style={{ color: trendColor }}>
-                      {trendIcon}
-                    </span>
-                    <span className="monitor-card-percentage">{percentageChange}%</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+              </div>
+              <div className="card-grid">
+                {charts.map((chart, index) => {
+                  const { value, trend, trendIcon, trendColor, percentageChange } = getCardMetrics(chart.data.datasets[0].data, chart.title);
+                  return (
+                    <div key={index} className="monitor-card">
+                      <div className="monitor-card-header">
+                        <h2 className="monitor-card-title">{chart.title.replace(' Chart', '')}</h2>
+                        <button
+                          className="info-icon"
+                          onClick={() => handleOpenModal(chart)}
+                          aria-label={`View details for ${chart.title.replace(' Chart', '')}`}
+                        >
+                          <IoInformationCircleOutline />
+                        </button>
+                      </div>
+                      <div className="monitor-card-metrics" aria-label={`${value} total, ${trend} trend, ${percentageChange}% change`}>
+                        <span className="monitor-card-value">{value}</span>
+                        <span className="monitor-card-trend" style={{ color: trendColor }}>
+                          {trendIcon}
+                        </span>
+                        <span className="monitor-card-percentage">{percentageChange}%</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
           {modalChart && (
             <div className="modal-overlay" onClick={handleCloseModal}>
               <div className="modal-content" onClick={(e) => e.stopPropagation()}>

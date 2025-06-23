@@ -314,7 +314,7 @@ function Account() {
                     </>
                   ) : (
                     <>
-                      <h1 className="account-username"></h1>
+                      <h1 className="account-username">-</h1>
                       <button
                         type="button"
                         className="connect-instagram-button"
@@ -329,22 +329,25 @@ function Account() {
                 <div className="account-stats">
                   <div className="account-stat">
                     <span className="account-stat-value">{userData.postsCount}</span>
-                    <span className="account-stat-label"> Posts</span>
+                    <span className="account-stat-label">Posts</span>
                   </div>
                   <div className="account-stat">
                     <span className="account-stat-value">{userData.followersCount}</span>
-                    <span className="account-stat-label"> Followers</span>
+                    <span className="account-stat-label">Followers</span>
                   </div>
                   <div className="account-stat">
                     <span className="account-stat-value">{userData.followingCount}</span>
-                    <span className="account-stat-label"> Following</span>
+                    <span className="account-stat-label">Following</span>
                   </div>
                 </div>
               </div>
             </div>
             <div className="account-details">
               <div className="account-detail-item">
-                <span className="account-detail-label">Email</span>
+                <div className="label-container">
+                  <IoMailOutline className="account-detail-icon" size={20} />
+                  <span className="account-detail-label">Email</span>
+                </div>
                 <span className="account-detail-value">{userData.email}</span>
                 <button
                   type="button"
@@ -356,7 +359,10 @@ function Account() {
                 </button>
               </div>
               <div className="account-detail-item">
-                <span className="account-detail-label">Phone Number</span>
+                <div className="label-container">
+                  <IoCallOutline className="account-detail-icon" size={20} />
+                  <span className="account-detail-label">Phone Number</span>
+                </div>
                 <span className="account-detail-value">{userData.phoneNumber}</span>
                 <button
                   type="button"
@@ -368,7 +374,10 @@ function Account() {
                 </button>
               </div>
               <div className="account-detail-item">
-                <span className="account-detail-label">Gender</span>
+                <div className="label-container">
+                  <IoPersonOutline className="account-detail-icon" size={20} />
+                  <span className="account-detail-label">Gender</span>
+                </div>
                 <span className="account-detail-value">{userData.gender}</span>
                 <button
                   type="button"
@@ -380,7 +389,10 @@ function Account() {
                 </button>
               </div>
               <div className="account-detail-item">
-                <span className="account-detail-label">Age</span>
+                <div className="label-container">
+                  <IoCalendarOutline className="account-detail-icon" size={20} />
+                  <span className="account-detail-label">Age</span>
+                </div>
                 <span className="account-detail-value">{userData.age}</span>
                 <button
                   type="button"
@@ -392,7 +404,10 @@ function Account() {
                 </button>
               </div>
               <div className="account-detail-item">
-                <span className="account-detail-label">Country</span>
+                <div className="label-container">
+                  <IoGlobeOutline className="account-detail-icon" size={20} />
+                  <span className="account-detail-label">Country</span>
+                </div>
                 <span className="account-detail-value">{userData.country}</span>
                 <button
                   type="button"
@@ -404,7 +419,10 @@ function Account() {
                 </button>
               </div>
               <div className="account-detail-item">
-                <span className="account-detail-label">Bio</span>
+                <div className="label-container">
+                  <IoDocumentTextOutline className="account-detail-icon" size={20} />
+                  <span className="account-detail-label">Bio</span>
+                </div>
                 <span className="account-detail-value">{userData.bio}</span>
                 <button
                   type="button"

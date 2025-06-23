@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
-import { IoArrowBack, IoPencil, IoPerson, IoCall, IoCalendar } from 'react-icons/io5';
+import { IoArrowBack, IoPencil, IoPerson, IoCall, IoCalendar, IoMailOutline, IoStarOutline, IoLogoInstagram } from 'react-icons/io5';
 import './UserInfo.css';
 
 function UserInfo() {
@@ -254,7 +254,10 @@ function UserInfo() {
         return (
           <div className="user-info-section">
             <div className="user-info-item">
-              <span className="user-info-label">Display Name</span>
+              <div className="label-container">
+                <IoPerson className="user-info-icon" size={20} />
+                <span className="user-info-label">Display Name</span>
+              </div>
               <div className="value-container">
                 <span className="user-info-value">{userData.displayName}</span>
                 <button
@@ -268,11 +271,17 @@ function UserInfo() {
               </div>
             </div>
             <div className="user-info-item">
-              <span className="user-info-label">Email</span>
+              <div className="label-container">
+                <IoMailOutline className="user-info-icon" size={20} />
+                <span className="user-info-label">Email</span>
+              </div>
               <span className="user-info-value">{userData.email}</span>
             </div>
             <div className="user-info-item">
-              <span className="user-info-label">Phone Number</span>
+              <div className="label-container">
+                <IoCall className="user-info-icon" size={20} />
+                <span className="user-info-label">Phone Number</span>
+              </div>
               <div className="value-container">
                 <span className="user-info-value">{userData.phoneNumber || 'Not set'}</span>
                 <button
@@ -286,7 +295,10 @@ function UserInfo() {
               </div>
             </div>
             <div className="user-info-item">
-              <span className="user-info-label">Date of Birth</span>
+              <div className="label-container">
+                <IoCalendar className="user-info-icon" size={20} />
+                <span className="user-info-label">Date of Birth</span>
+              </div>
               <div className="value-container">
                 <span className="user-info-value">{formatDate(userData.dateOfBirth)}</span>
                 <button
@@ -305,7 +317,10 @@ function UserInfo() {
         return (
           <div className="user-info-section">
             <div className="user-info-item">
-              <span className="user-info-label">Account Type</span>
+              <div className="label-container">
+                <IoStarOutline className="user-info-icon" size={20} />
+                <span className="user-info-label">Account Type</span>
+              </div>
               <span className="user-info-value">
                 {userData.isPremium ? 'Premium' : 'Free'}
               </span>
@@ -326,7 +341,10 @@ function UserInfo() {
         return (
           <div className="user-info-section">
             <div className="user-info-item">
-              <span className="user-info-label">Instagram</span>
+              <div className="label-container">
+                <IoLogoInstagram className="user-info-icon" size={20} />
+                <span className="user-info-label">Instagram</span>
+              </div>
               <span className="user-info-value">
                 {userData.instagramConnected ? 'Connected' : 'Not Connected'}
               </span>

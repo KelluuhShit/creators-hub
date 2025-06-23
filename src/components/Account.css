@@ -1,6 +1,6 @@
 /* src/pages/Account.css */
 .account-container {
-  max-width: 720px; /* Matches Profile.css */
+  max-width: 720px;
   width: 95%;
   margin: 24px auto;
   padding: clamp(20px, 3vw, 24px);
@@ -8,8 +8,8 @@
   border-radius: 12px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
-  min-height: calc(100vh - 80px); /* Space for navbar */
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; /* Matches Profile.css */
+  min-height: calc(100vh - 80px);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .account-header {
@@ -22,7 +22,7 @@
 .back-button {
   background: none;
   border: none;
-  color: #833ab4; /* Instagram purple */
+  color: #833ab4;
   cursor: pointer;
   padding: 8px;
   border-radius: 50%;
@@ -43,13 +43,13 @@
 .account-title {
   font-size: clamp(1.5rem, 2.5vw, 1.75rem);
   font-weight: 700;
-  color: #1f2a44; /* Matches Profile.css */
+  color: #1f2a44;
   margin: 0;
 }
 
 .account-header-content {
   display: flex;
-  align-items: flex-start; /* Align top for bio flow */
+  align-items: flex-start;
   gap: clamp(16px, 2vw, 20px);
   margin-bottom: clamp(20px, 3vw, 24px);
 }
@@ -58,7 +58,7 @@
   position: relative;
   width: clamp(100px, 15vw, 120px);
   height: clamp(100px, 15vw, 120px);
-  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45); /* Instagram gradient */
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
   border-radius: 50%;
   padding: 3px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -90,12 +90,12 @@
 }
 
 .account-verified {
-  color: #0095f6; /* Instagram blue */
+  color: #0095f6;
   font-size: 1.25rem;
 }
 
 .connect-instagram-button {
-  background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcaf45); /* Instagram gradient */
+  background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcaf45);
   color: #ffffff;
   font-size: clamp(0.85rem, 1.6vw, 0.9rem);
   font-weight: 600;
@@ -136,7 +136,7 @@
 
 .account-stat-label {
   font-size: clamp(0.8rem, 1.5vw, 0.85rem);
-  color: #475569; /* Matches Profile.css */
+  color: #475569;
 }
 
 .account-details {
@@ -153,19 +153,30 @@
   padding: clamp(12px, 2vw, 16px) clamp(16px, 3vw, 20px);
   background: #ffffff;
   border-radius: 8px;
-  border: 1px solid #e2e8f0; /* Matches Profile.css */
+  border: 1px solid #e2e8f0;
   transition: background 0.3s;
 }
 
 .account-detail-item:hover {
-  background: #f8fafc; /* Subtle hover effect */
+  background: #f8fafc;
+}
+
+.label-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 140px;
+}
+
+.account-detail-icon {
+  color: #833ab4;
+  transition: color 0.3s;
 }
 
 .account-detail-label {
   font-size: clamp(0.95rem, 1.8vw, 1rem);
   font-weight: 600;
   color: #475569;
-  flex: 0 0 140px;
 }
 
 .account-detail-value {
@@ -197,7 +208,7 @@
 }
 
 .error-message {
-  color: #dc2626; /* Matches Profile.css */
+  color: #dc2626;
   font-size: clamp(0.85rem, 1.6vw, 0.9rem);
   text-align: center;
   margin: 1.5rem 0;
@@ -241,7 +252,7 @@
   width: clamp(100px, 15vw, 120px);
   height: clamp(100px, 15vw, 120px);
   border-radius: 50%;
-  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%); /* Matches Profile.css */
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
   background-size: 200%;
   animation: shimmer 1.5s infinite;
   margin: 0 auto 12px;
@@ -371,14 +382,14 @@
 }
 
 .edit-modal-input {
-width: 90%;
-padding: clamp(10px, 1.8vw, 12px);
-font-size: clamp(0.95rem, 1.8vw, 1rem);
-border: 1px solid #e2e8f0;
-border-radius: 8px;
-color: #1f2a44;
-margin-bottom: 12px;
-transition: border-color 0.3s;
+  width: 90%;
+  padding: clamp(10px, 1.8vw, 12px);
+  font-size: clamp(0.95rem, 1.8vw, 1rem);
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #1f2a44;
+  margin-bottom: 12px;
+  transition: border-color 0.3s;
 }
 
 .edit-modal-input:focus {
@@ -406,7 +417,7 @@ transition: border-color 0.3s;
 }
 
 .edit-modal-save-button {
-  background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcaf45); /* Instagram gradient */
+  background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcaf45);
   color: #ffffff;
   font-size: clamp(0.9rem, 1.6vw, 0.95rem);
   font-weight: 600;
@@ -503,7 +514,7 @@ transition: border-color 0.3s;
     font-size: clamp(0.9rem, 1.6vw, 0.95rem);
   }
 
-  .account-detail-label {
+  .label-container {
     flex: 0 0 120px;
   }
 
@@ -598,7 +609,7 @@ transition: border-color 0.3s;
     font-size: clamp(0.95rem, 1.8vw, 1rem);
   }
 
-  .account-detail-label {
+  .label-container {
     flex: 0 0 130px;
   }
 
