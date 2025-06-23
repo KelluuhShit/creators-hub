@@ -85,29 +85,41 @@
 }
 
 .activities-card {
-  background: #f9f9f9;
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid #333;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: clamp(16px, 3vw, 20px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-left: 4px solid #1f2a44;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.activities-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
 .table-header {
   display: grid;
-  grid-template-columns: 1fr 2fr 2fr;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #333;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  grid-template-columns: 1fr 2fr 1fr; /* Adjusted for better balance */
+  font-size: clamp(0.9rem, 1.8vw, 0.95rem);
+  font-weight: 600;
+  color: #1f2a44;
+  padding: clamp(10px, 2vw, 12px) 0;
+  border-bottom: 2px solid #e2e8f0;
 }
 
 .table-row {
   display: grid;
-  grid-template-columns: 1fr 2fr 2fr;
-  padding: 10px 0;
+  grid-template-columns: 1fr 2fr 1fr;
+  padding: clamp(12px, 2vw, 14px) 0;
   align-items: center;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e2e8f0;
+  background: #ffffff;
+  transition: background 0.3s;
+}
+
+.table-row:hover {
+  background: #f1f5f9;
 }
 
 .table-row:last-child {
@@ -115,30 +127,39 @@
 }
 
 .table-column {
-  font-size: 1rem;
-  color: #555;
-  padding: 0 5px;
+  font-size: clamp(0.85rem, 1.6vw, 0.9rem);
+  color: #475569;
+  padding: 0 clamp(8px, 1.5vw, 10px);
 }
 
 .details-column {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }
 
 .details-button {
   background: none;
   border: none;
-  font-size: 1.5rem;
-  color: #007bff;
+  font-size: 1.25rem;
+  color: #833ab4;
   cursor: pointer;
-  transition: color 0.3s, transform 0.3s;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: color 0.3s, transform 0.3s, background 0.3s;
 }
 
-.details-button:hover {
-  color: #833ab4;
+.details-button:hover,
+.details-button:focus {
+  color: #6a1b9a;
   transform: scale(1.1);
+  background: rgba(131, 58, 180, 0.1);
+}
+
+.details-button:focus {
+  outline: 2px solid #833ab4;
+  outline-offset: 2px;
 }
 
 /* Mobile (≤480px) */

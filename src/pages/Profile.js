@@ -280,7 +280,7 @@ function Profile() {
                     </>
                   ) : (
                     <>
-                      <h1 className="profile-username">-</h1>
+                      <h1 className="profile-username"></h1>
                       <button
                         type="button"
                         className="connect-instagram-button"
@@ -295,26 +295,20 @@ function Profile() {
                 <div className="profile-stats">
                   <div className="profile-stat">
                     <span className="profile-stat-value">{userData.postsCount}</span>
-                    <span className="profile-stat-label">Posts</span>
+                    <span className="profile-stat-label"> Posts</span>
                   </div>
                   <div className="profile-stat">
                     <span className="profile-stat-value">{userData.followersCount}</span>
-                    <span className="profile-stat-label">Followers</span>
+                    <span className="profile-stat-label"> Followers</span>
                   </div>
                   <div className="profile-stat">
                     <span className="profile-stat-value">{userData.followingCount}</span>
-                    <span className="profile-stat-label">Following</span>
+                    <span className="profile-stat-label"> Following</span>
                   </div>
                 </div>
+                
+                <p className="profile-bio">{userData.displayName}</p>
                 <p className="profile-bio">{userData.bio}</p>
-                <a
-                  href={userData.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="profile-link"
-                >
-                  {userData.website.replace(/^https?:\/\//, '')}
-                </a>
               </div>
             </div>
             <div className="profile-grid">

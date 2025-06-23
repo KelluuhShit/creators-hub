@@ -1,280 +1,284 @@
-/* Container for the entire account page */
+/* src/pages/Account.css */
 .account-container {
-  max-width: 700px;
-  width: 90%;
-  margin: 30px auto;
-  padding: 25px;
-  background-color: #f9f9f9;
+  max-width: 720px; /* Matches Profile.css */
+  width: 95%;
+  margin: 24px auto;
+  padding: clamp(20px, 3vw, 24px);
+  background-color: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
+  min-height: calc(100vh - 80px); /* Space for navbar */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; /* Matches Profile.css */
 }
 
-/* Header for back button and title */
 .account-header {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: clamp(12px, 2vw, 16px);
+  margin-bottom: clamp(20px, 3vw, 24px);
 }
 
 .back-button {
   background: none;
   border: none;
+  color: #833ab4; /* Instagram purple */
   cursor: pointer;
-  color: #007bff;
-  padding: 5px;
+  padding: 8px;
+  border-radius: 50%;
+  transition: color 0.3s, background 0.3s;
 }
 
-.back-button:hover {
-  color: #0056b3;
+.back-button:hover,
+.back-button:focus {
+  color: #6b2c9a;
+  background: #f8fafc;
 }
 
 .back-button:focus {
-  outline: 2px solid #007bff;
+  outline: 2px solid #833ab4;
   outline-offset: 2px;
 }
 
 .account-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #222;
+  font-size: clamp(1.5rem, 2.5vw, 1.75rem);
+  font-weight: 700;
+  color: #1f2a44; /* Matches Profile.css */
   margin: 0;
 }
 
-/* Header section for avatar and user info */
 .account-header-content {
   display: flex;
-  align-items: center;
-  gap: 25px;
-  margin-bottom: 25px;
+  align-items: flex-start; /* Align top for bio flow */
+  gap: clamp(16px, 2vw, 20px);
+  margin-bottom: clamp(20px, 3vw, 24px);
 }
 
-/* Avatar wrapper with a blue gradient */
 .account-avatar-wrapper {
   position: relative;
-  width: 100px;
-  height: 100px;
-  background: linear-gradient(45deg, #007bff, #00b7eb, #00d4b8);
+  width: clamp(100px, 15vw, 120px);
+  height: clamp(100px, 15vw, 120px);
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45); /* Instagram gradient */
   border-radius: 50%;
-  padding: 4px;
+  padding: 3px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Avatar image */
 .account-avatar {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 2px solid #fff;
+  border: 2px solid #ffffff;
   object-fit: cover;
 }
 
-/* User info container */
 .account-info {
   flex: 1;
 }
 
-/* Username wrapper */
 .account-username-wrapper {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 0.75rem;
 }
 
-/* Username styling */
 .account-username {
-  font-size: 1.6rem;
+  font-size: clamp(1.5rem, 2.5vw, 1.75rem);
   font-weight: 700;
-  color: #222;
+  color: #1f2a44;
 }
 
-/* Verified icon */
 .account-verified {
-  color: #00b7eb;
-  font-size: 1.3rem;
+  color: #0095f6; /* Instagram blue */
+  font-size: 1.25rem;
 }
 
-/* Connect Instagram button */
 .connect-instagram-button {
-  background: linear-gradient(90deg, #007bff, #00b7eb, #00d4b8);
-  color: #fff;
-  font-size: clamp(0.9rem, 1.7vw, 1rem);
+  background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcaf45); /* Instagram gradient */
+  color: #ffffff;
+  font-size: clamp(0.85rem, 1.6vw, 0.9rem);
   font-weight: 600;
-  padding: clamp(10px, 2vw, 12px) clamp(18px, 3.5vw, 22px);
+  padding: clamp(8px, 1.5vw, 10px) clamp(14px, 2.5vw, 16px);
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
 }
 
-.connect-instagram-button:hover {
-  background: linear-gradient(90deg, #0056b3, #0097c7, #00b7a2);
-  box-shadow: 0 2px 10px rgba(0, 123, 255, 0.3);
+.connect-instagram-button:hover,
+.connect-instagram-button:focus {
+  background: linear-gradient(90deg, #6b2c9a, #e01b1b, #e89f3a);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(131, 58, 180, 0.3);
 }
 
 .connect-instagram-button:focus {
-  outline: 2px solid #007bff;
+  outline: 2px solid #833ab4;
   outline-offset: 2px;
 }
 
-/* Stats section */
 .account-stats {
   display: flex;
-  gap: 25px;
-  margin-bottom: 12px;
+  gap: clamp(16px, 2vw, 20px);
+  margin-bottom: 0.75rem;
 }
 
-/* Individual stat */
 .account-stat {
   text-align: center;
 }
 
-/* Stat value */
 .account-stat-value {
-  font-size: 1.15rem;
+  font-size: clamp(1.1rem, 2vw, 1.25rem);
   font-weight: 700;
-  color: #222;
+  color: #1f2a44;
 }
 
-/* Stat label */
 .account-stat-label {
-  font-size: 0.9rem;
-  color: #555;
+  font-size: clamp(0.8rem, 1.5vw, 0.85rem);
+  color: #475569; /* Matches Profile.css */
 }
 
-/* Details section */
 .account-details {
-  margin-top: 25px;
+  margin-top: clamp(20px, 3vw, 24px);
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
 }
 
-/* Individual detail item */
 .account-detail-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 18px;
+  padding: clamp(12px, 2vw, 16px) clamp(16px, 3vw, 20px);
   background: #ffffff;
-  border-radius: 10px;
-  border: 1px solid #e0e4e8;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  border: 1px solid #e2e8f0; /* Matches Profile.css */
+  transition: background 0.3s;
 }
 
-/* Detail label */
+.account-detail-item:hover {
+  background: #f8fafc; /* Subtle hover effect */
+}
+
 .account-detail-label {
-  font-size: clamp(1rem, 1.9vw, 1.1rem);
+  font-size: clamp(0.95rem, 1.8vw, 1rem);
   font-weight: 600;
-  color: #222;
-  flex: 0 0 130px;
+  color: #475569;
+  flex: 0 0 140px;
 }
 
-/* Detail value */
 .account-detail-value {
-  font-size: clamp(1rem, 1.9vw, 1.1rem);
-  color: #555;
+  font-size: clamp(0.95rem, 1.8vw, 1rem);
+  color: #1f2a44;
   flex: 1;
   text-align: left;
 }
 
-/* Edit button */
 .account-detail-edit {
   background: none;
   border: none;
+  color: #833ab4;
   cursor: pointer;
-  padding: 10px;
+  padding: 6px;
   border-radius: 50%;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: color 0.3s, background 0.3s;
 }
 
-.account-detail-edit:hover {
-  background: #e8f0fe;
-  color: #007bff;
+.account-detail-edit:hover,
+.account-detail-edit:focus {
+  color: #6b2c9a;
+  background: #f1f5f9;
 }
 
 .account-detail-edit:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
-}
-
-/* Error message */
-.error-message {
-  color: #d32f2f;
-  font-size: clamp(0.9rem, 1.7vw, 1rem);
-  text-align: center;
-  margin: 25px 0;
-  padding: 12px;
-  background: #ffebee;
-  border-radius: 6px;
-}
-
-.error-message button {
-  background: #d32f2f;
-  color: #fff;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: 10px;
-  transition: background-color 0.2s ease;
-}
-
-.error-message button:hover {
-  background: #b71c1c;
-}
-
-.error-message button:focus {
-  outline: 2px solid #d32f2f;
+  outline: 2px solid #833ab4;
   outline-offset: 2px;
 }
 
-/* Skeleton loading states */
+.error-message {
+  color: #dc2626; /* Matches Profile.css */
+  font-size: clamp(0.85rem, 1.6vw, 0.9rem);
+  text-align: center;
+  margin: 1.5rem 0;
+  padding: 12px;
+  background: #fef2f2;
+  border-radius: 8px;
+  border: 1px solid #fee2e2;
+}
+
+.error-message button {
+  background: #dc2626;
+  color: #ffffff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: clamp(0.8rem, 1.5vw, 0.85rem);
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.error-message button:hover,
+.error-message button:focus {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.error-message button:focus {
+  outline: 2px solid #833ab4;
+  outline-offset: 2px;
+}
+
 .skeleton-container {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 16px;
 }
 
 .skeleton-avatar {
-  width: 100px;
-  height: 100px;
+  width: clamp(100px, 15vw, 120px);
+  height: clamp(100px, 15vw, 120px);
   border-radius: 50%;
-  background: #e0e0e0;
-  margin: 0 auto 12px;
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%); /* Matches Profile.css */
+  background-size: 200%;
   animation: shimmer 1.5s infinite;
+  margin: 0 auto 12px;
 }
 
 .skeleton-username {
   width: 160px;
-  height: 22px;
-  background: #e0e0e0;
+  height: 20px;
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200%;
   border-radius: 6px;
-  margin: 0 auto 12px;
   animation: shimmer 1.5s infinite;
+  margin: 8px auto;
 }
 
 .skeleton-bio {
   width: 220px;
   height: 16px;
-  background: #e0e0e0;
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200%;
   border-radius: 6px;
-  margin: 0 auto 12px;
   animation: shimmer 1.5s infinite;
+  margin: 8px auto;
 }
 
 .skeleton-stats {
   display: flex;
   justify-content: center;
-  gap: 25px;
+  gap: clamp(16px, 2vw, 20px);
   margin-bottom: 12px;
 }
 
 .skeleton-stat {
   width: 70px;
   height: 40px;
-  background: #e0e0e0;
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200%;
   border-radius: 6px;
   animation: shimmer 1.5s infinite;
 }
@@ -282,20 +286,20 @@
 .skeleton-details {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-top: 25px;
+  gap: 12px;
+  margin-top: clamp(16px, 3vw, 20px);
 }
 
 .skeleton-details::before {
   content: '';
   width: 100%;
-  height: 45px;
-  background: #e0e0e0;
-  border-radius: 10px;
+  height: 48px;
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200%;
+  border-radius: 8px;
   animation: shimmer 1.5s infinite;
 }
 
-/* Modal Styles */
 .edit-modal-overlay {
   position: fixed;
   top: 0;
@@ -307,14 +311,16 @@
   justify-content: center;
   align-items: center;
   z-index: 1002;
+  opacity: 0;
+  animation: fade-in 0.3s ease-out forwards;
 }
 
 .edit-modal {
-  background: #fff;
-  border-radius: 15px;
+  background: #ffffff;
+  border-radius: 12px;
   width: 90%;
   max-width: 400px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
   overflow: hidden;
   animation: slide-up 0.3s ease-out;
 }
@@ -323,51 +329,61 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  border-bottom: 1px solid #e0e4e8;
+  padding: clamp(12px, 2vw, 16px) clamp(16px, 3vw, 20px);
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .edit-modal-icon {
-  color: #007bff;
+  color: #833ab4;
 }
 
 .edit-modal-close {
   background: none;
   border: none;
+  color: #475569;
   cursor: pointer;
-  color: #555;
-  padding: 4px;
+  padding: 8px;
+  border-radius: 50%;
+  transition: color 0.3s, background 0.3s;
 }
 
-.edit-modal-close:hover {
-  color: #007bff;
+.edit-modal-close:hover,
+.edit-modal-close:focus {
+  color: #833ab4;
+  background: #f1f5f9;
 }
 
 .edit-modal-close:focus {
-  outline: 2px solid #007bff;
+  outline: 2px solid #833ab4;
   outline-offset: 2px;
 }
 
 .edit-modal-content {
-  padding: 20px;
+  padding: clamp(16px, 3vw, 20px);
   text-align: center;
 }
 
 .edit-modal-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #222;
-  margin: 0 0 15px;
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  color: #1f2a44;
+  margin: 0 0 12px;
 }
 
 .edit-modal-input {
-  width: 100%;
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid #e0e4e8;
-  border-radius: 5px;
-  color: #333;
-  margin-bottom: 10px;
+width: 90%;
+padding: clamp(10px, 1.8vw, 12px);
+font-size: clamp(0.95rem, 1.8vw, 1rem);
+border: 1px solid #e2e8f0;
+border-radius: 8px;
+color: #1f2a44;
+margin-bottom: 12px;
+transition: border-color 0.3s;
+}
+
+.edit-modal-input:focus {
+  border-color: #833ab4;
+  outline: none;
 }
 
 .edit-modal-textarea {
@@ -377,183 +393,149 @@
 }
 
 .edit-modal-error {
-  color: #d32f2f;
-  font-size: 0.9rem;
-  margin: 10px 0 0;
+  color: #dc2626;
+  font-size: clamp(0.85rem, 1.6vw, 0.9rem);
+  margin: 8px 0 0;
 }
 
 .edit-modal-footer {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 0 20px 20px;
+  gap: 8px;
+  padding: 0 clamp(16px, 3vw, 20px) clamp(16px, 3vw, 20px);
 }
 
 .edit-modal-save-button {
-  background: linear-gradient(90deg, #007bff, #00b7eb, #00d4b8);
-  color: #fff;
-  font-size: 1rem;
+  background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcaf45); /* Instagram gradient */
+  color: #ffffff;
+  font-size: clamp(0.9rem, 1.6vw, 0.95rem);
   font-weight: 600;
-  padding: 10px;
+  padding: clamp(10px, 1.8vw, 12px);
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
 }
 
-.edit-modal-save-button:hover {
-  background: linear-gradient(90deg, #0056b3, #0097c7, #00b7a2);
-  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+.edit-modal-save-button:hover,
+.edit-modal-save-button:focus {
+  background: linear-gradient(90deg, #6b2c9a, #e01b1b, #e89f3a);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(131, 58, 180, 0.3);
 }
 
 .edit-modal-save-button:focus {
-  outline: 2px solid #007bff;
+  outline: 2px solid #833ab4;
   outline-offset: 2px;
 }
 
 .edit-modal-cancel-button {
-  background: none;
-  border: 1px solid #007bff;
-  color: #007bff;
-  font-size: 1rem;
-  font-weight: 500;
-  padding: 10px;
+  background: #ffffff;
+  border: 1px solid #833ab4;
+  color: #833ab4;
+  font-size: clamp(0.9rem, 1.6vw, 0.95rem);
+  font-weight: 600;
+  padding: clamp(10px, 1.8vw, 12px);
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s, color 0.3s, transform 0.2s;
 }
 
-.edit-modal-cancel-button:hover {
-  background: #e8f0fe;
+.edit-modal-cancel-button:hover,
+.edit-modal-cancel-button:focus {
+  background: #f1f5f9;
+  color: #6b2c9a;
+  transform: translateY(-1px);
 }
 
 .edit-modal-cancel-button:focus {
-  outline: 2px solid #007bff;
+  outline: 2px solid #833ab4;
   outline-offset: 2px;
 }
 
-/* Shimmer animation */
-@keyframes shimmer {
-  0% {
-    background: linear-gradient(to right, #e0e0e0 0%, #f0f0f0 50%, #e0e0e0 100%);
-    background-position: -100%;
-  }
-  100% {
-    background-position: 100%;
-  }
-}
-
-/* Modal animation */
-@keyframes slide-up {
-  from {
-    transform: translateY(50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Responsive adjustments */
+/* Responsive Adjustments */
 @media (max-width: 480px) {
   .account-container {
-    width: 95%;
-    padding: 18px;
-    margin: 15px auto;
-  }
-
-  .account-header {
-    gap: 10px;
-  }
-
-  .account-title {
-    font-size: 1.25rem;
+    width: 100%;
+    padding: clamp(16px, 3vw, 20px);
+    margin: 16px auto;
+    border-radius: 8px;
   }
 
   .account-header-content {
     flex-direction: column;
     align-items: center;
-    gap: 15px;
-  }
-
-  .account-avatar-wrapper {
-    width: 80px;
-    height: 80px;
-  }
-
-  .account-username {
-    font-size: 1.3rem;
-  }
-
-  .connect-instagram-button {
-    padding: clamp(8px, 1.8vw, 10px) clamp(15px, 3vw, 20px);
-    font-size: clamp(0.85rem, 1.6vw, 0.95rem);
-  }
-
-  .account-stats {
-    gap: 15px;
-  }
-
-  .account-stat-value {
-    font-size: 1rem;
-  }
-
-  .account-stat-label {
-    font-size: 0.8rem;
-  }
-
-  .account-details {
-    margin-top: 20px;
     gap: 12px;
   }
 
+  .account-avatar-wrapper {
+    width: clamp(80px, 12vw, 90px);
+    height: clamp(80px, 12vw, 90px);
+  }
+
+  .account-username {
+    font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+  }
+
+  .connect-instagram-button {
+    padding: clamp(6px, 1.2vw, 8px) clamp(12px, 2vw, 14px);
+    font-size: clamp(0.8rem, 1.5vw, 0.85rem);
+  }
+
+  .account-stats {
+    gap: clamp(12px, 2vw, 16px);
+  }
+
+  .account-stat-value {
+    font-size: clamp(0.95rem, 1.8vw, 1rem);
+  }
+
+  .account-stat-label {
+    font-size: clamp(0.75rem, 1.4vw, 0.8rem);
+  }
+
   .account-detail-item {
-    padding: 12px 14px;
+    padding: clamp(10px, 1.8vw, 12px) clamp(12px, 2vw, 16px);
   }
 
   .account-detail-label,
   .account-detail-value {
-    font-size: clamp(0.9rem, 1.7vw, 0.95rem);
+    font-size: clamp(0.9rem, 1.6vw, 0.95rem);
   }
 
   .account-detail-label {
-    flex: 0 0 100px;
-  }
-
-  .account-detail-edit {
-    padding: 8px;
+    flex: 0 0 120px;
   }
 
   .edit-modal {
     width: 95%;
-    max-width: 350px;
+    max-width: 360px;
   }
 
   .edit-modal-title {
-    font-size: 1.15rem;
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
   }
 
   .edit-modal-input,
   .edit-modal-textarea {
-    font-size: 0.95rem;
-    padding: 8px;
+    font-size: clamp(0.9rem, 1.6vw, 0.95rem);
+    padding: clamp(8px, 1.5vw, 10px);
   }
 
   .edit-modal-save-button,
   .edit-modal-cancel-button {
-    font-size: 0.95rem;
-    padding: 8px;
+    font-size: clamp(0.85rem, 1.5vw, 0.9rem);
+    padding: clamp(8px, 1.5vw, 10px);
   }
 
   .skeleton-avatar {
-    width: 80px;
-    height: 80px;
+    width: clamp(80px, 12vw, 90px);
+    height: clamp(80px, 12vw, 90px);
   }
 
   .skeleton-username {
-    width: 130px;
-    height: 18px;
+    width: 140px;
+    height: 16px;
   }
 
   .skeleton-bio {
@@ -563,7 +545,7 @@
 
   .skeleton-stat {
     width: 60px;
-    height: 35px;
+    height: 36px;
   }
 
   .skeleton-details::before {
@@ -573,55 +555,42 @@
 
 @media (min-width: 481px) and (max-width: 767px) {
   .account-container {
-    width: 92%;
-    padding: 20px;
-  }
-
-  .account-header {
-    gap: 12px;
-  }
-
-  .account-title {
-    font-size: 1.375rem;
+    width: 90%;
+    padding: clamp(18px, 3vw, 22px);
   }
 
   .account-header-content {
-    gap: 20px;
+    gap: clamp(14px, 2vw, 18px);
   }
 
   .account-avatar-wrapper {
-    width: 90px;
-    height: 90px;
+    width: clamp(90px, 13vw, 100px);
+    height: clamp(90px, 13vw, 100px);
   }
 
   .account-username {
-    font-size: 1.45rem;
+    font-size: clamp(1.4rem, 2.3vw, 1.6rem);
   }
 
   .connect-instagram-button {
-    padding: clamp(9px, 1.9vw, 11px) clamp(16px, 3.2vw, 20px);
-    font-size: clamp(0.9rem, 1.7vw, 1rem);
+    padding: clamp(7px, 1.4vw, 9px) clamp(14px, 2.2vw, 16px);
+    font-size: clamp(0.85rem, 1.6vw, 0.9rem);
   }
 
   .account-stats {
-    gap: 20px;
+    gap: clamp(14px, 2vw, 18px);
   }
 
   .account-stat-value {
-    font-size: 1.1rem;
+    font-size: clamp(1rem, 1.8vw, 1.1rem);
   }
 
   .account-stat-label {
-    font-size: 0.85rem;
-  }
-
-  .account-details {
-    margin-top: 22px;
-    gap: 14px;
+    font-size: clamp(0.8rem, 1.5vw, 0.85rem);
   }
 
   .account-detail-item {
-    padding: 13px 16px;
+    padding: clamp(11px, 2vw, 14px) clamp(14px, 2.5vw, 18px);
   }
 
   .account-detail-label,
@@ -630,7 +599,7 @@
   }
 
   .account-detail-label {
-    flex: 0 0 120px;
+    flex: 0 0 130px;
   }
 
   .edit-modal {
@@ -639,32 +608,33 @@
   }
 
   .edit-modal-title {
-    font-size: 1.2rem;
+    font-size: clamp(1.2rem, 2.2vw, 1.375rem);
   }
 
   .edit-modal-input,
   .edit-modal-textarea {
-    font-size: 0.975rem;
-    padding: 9px;
+    font-size: clamp(0.95rem, 1.8vw, 1rem);
+    padding: clamp(9px, 1.6vw, 11px);
   }
 
   .edit-modal-save-button,
   .edit-modal-cancel-button {
-    font-size: 0.975rem;
-    padding: 9px;
+    font-size: clamp(0.9rem, 1.6vw, 0.95rem);
+    padding: clamp(9px, 1.6vw, 11px);
   }
 
   .skeleton-avatar {
-    width: 90px;
-    height: 90px;
+    width: clamp(90px, 13vw, 100px);
+    height: clamp(90px, 13vw, 100px);
   }
 
   .skeleton-username {
     width: 150px;
-    height: 20px;
+    height: 18px;
   }
 
   .skeleton-bio {
+    width: 200px;
     height: 15px;
   }
 
@@ -674,6 +644,21 @@
   }
 
   .skeleton-details::before {
-    height: 42px;
+    height: 44px;
   }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(100px); }
+  to { transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200%; }
+  100% { background-position: 200%; }
 }
