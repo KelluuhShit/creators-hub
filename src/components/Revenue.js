@@ -143,9 +143,9 @@ function Revenue() {
       </div>
       <div className="revenue-header">
         <h4 className="revenue-title">Revenue Dashboard</h4>
-        <button className="back-button" onClick={handleBackClick} aria-label="Go back">
+        {/* <button className="back-button" onClick={handleBackClick} aria-label="Go back">
           <IoArrowBack /> Back
-        </button>
+        </button> */}
       </div>
       <h5 className="estimated-revenue-title">Estimated Revenue</h5>
       <div className="currency-section">

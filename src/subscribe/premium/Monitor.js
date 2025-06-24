@@ -195,6 +195,7 @@ function Monitor() {
               Revenue
             </button>
           </div>
+          <h4 className="statistics-title">Statistics Dashboard</h4>
           {activeTab === 'statistics' && (
             <>
               <div className="time-period-buttons">

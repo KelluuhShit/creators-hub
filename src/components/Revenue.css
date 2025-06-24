@@ -16,15 +16,10 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin-bottom: 20px;
+  margin-top: -20px;
 }
 
-.revenue-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin: 0;
-  color: #333;
-}
+
 
 .back-button {
   background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcaf45);
@@ -44,7 +39,6 @@
 }
 
 .estimated-revenue-title {
-  font-size: 1.25rem;
   font-weight: 600;
   color: #333;
   margin: 0 0 20px;
@@ -206,18 +200,12 @@
     margin: 10px auto;
   }
 
-  .revenue-title {
-    font-size: 1.25rem;
-  }
-
+ 
   .back-button {
     padding: 8px 15px;
     font-size: 0.875rem;
   }
 
-  .estimated-revenue-title {
-    font-size: 1.125rem;
-  }
 
   .currency-section {
     flex-direction: row;
@@ -287,18 +275,13 @@
     padding: 18px;
   }
 
-  .revenue-title {
-    font-size: 1.375rem;
-  }
 
   .back-button {
     padding: 9px 18px;
     font-size: 0.9375rem;
   }
 
-  .estimated-revenue-title {
-    font-size: 1.1875rem;
-  }
+  
 
   .currency-section {
     flex-direction: row;
