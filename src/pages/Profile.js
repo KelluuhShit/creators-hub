@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { IoCheckmarkCircle, IoLogOutOutline, IoDownloadOutline, IoMenuOutline, IoCloseOutline, IoArrowForward } from 'react-icons/io5';
+import { IoCheckmarkCircle, IoLogOutOutline, IoDownloadOutline, IoMenuOutline, IoCloseOutline, IoChevronForward } from 'react-icons/io5';
 import './Profile.css';
 
 function Profile() {
@@ -220,7 +220,7 @@ function Profile() {
                 aria-label="Go to account information"
               >
                 <span>Account Information</span>
-                <IoArrowForward size={20} />
+                <IoChevronForward size={20} />
               </button>
               <button
                 type="button"
@@ -229,7 +229,7 @@ function Profile() {
                 aria-label="Go to account type"
               >
                 <span>Account Type</span>
-                <IoArrowForward size={20} />
+                <IoChevronForward size={20} />
               </button>
               <button
                 type="button"
@@ -238,7 +238,7 @@ function Profile() {
                 aria-label="Go to connected account"
               >
                 <span>Connected Account</span>
-                <IoArrowForward size={20} />
+                <IoChevronForward size={20} />
               </button>
             </div>
           </div>

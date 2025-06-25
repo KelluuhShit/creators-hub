@@ -1,4 +1,3 @@
-/* src/pages/Account.css */
 .account-container {
   max-width: 720px;
   width: 95%;
@@ -27,6 +26,10 @@
   padding: 8px;
   border-radius: 50%;
   transition: color 0.3s, background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .back-button:hover,
@@ -38,6 +41,12 @@
 .back-button:focus {
   outline: 2px solid #833ab4;
   outline-offset: 2px;
+}
+
+.back-button:disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+  background: none;
 }
 
 .account-title {
@@ -104,6 +113,10 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
 }
 
 .connect-instagram-button:hover,
@@ -116,6 +129,13 @@
 .connect-instagram-button:focus {
   outline: 2px solid #833ab4;
   outline-offset: 2px;
+}
+
+.connect-instagram-button:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .account-stats {
@@ -369,6 +389,12 @@
   outline-offset: 2px;
 }
 
+.edit-modal-close:disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+  background: none;
+}
+
 .edit-modal-content {
   padding: clamp(16px, 3vw, 20px);
   text-align: center;
@@ -426,6 +452,11 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
 }
 
 .edit-modal-save-button:hover,
@@ -440,6 +471,13 @@
   outline-offset: 2px;
 }
 
+.edit-modal-save-button:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 .edit-modal-cancel-button {
   background: #ffffff;
   border: 1px solid #833ab4;
@@ -450,6 +488,11 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.3s, color 0.3s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
 }
 
 .edit-modal-cancel-button:hover,
@@ -462,6 +505,43 @@
 .edit-modal-cancel-button:focus {
   outline: 2px solid #833ab4;
   outline-offset: 2px;
+}
+
+.edit-modal-cancel-button:disabled {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #d1d5db;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* New styles for button loader */
+.button-loader {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* Adjust loader color for cancel button (non-gradient background) */
+.edit-modal-cancel-button .button-loader {
+  border: 2px solid #833ab4;
+  border-top: 2px solid transparent;
+}
+
+/* Adjust loader for back button */
+.back-button .button-loader {
+  border: 2px solid #833ab4;
+  border-top: 2px solid transparent;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
 }
 
 /* Responsive Adjustments */
@@ -672,4 +752,9 @@
 @keyframes shimmer {
   0% { background-position: -200%; }
   100% { background-position: 200%; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

@@ -113,6 +113,31 @@
   cursor: not-allowed;
 }
 
+/* New styles for signout-button */
+.signout-button {
+  background: #d32f2f; /* Red to indicate a destructive action */
+  color: #fff;
+  font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+  font-weight: 600;
+  padding: clamp(10px, 2vw, 12px) clamp(20px, 4vw, 30px);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+  margin-left: 1em;
+}
+
+.signout-button:hover {
+  background: #b71c1c; /* Darker red on hover */
+  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3);
+}
+
+.signout-button:focus {
+  outline: 2px solid #833ab4; /* Purple outline for accessibility */
+  outline-offset: 2px;
+}
+
 /* Mobile devices (up to 480px) */
 @media (max-width: 480px) {
   .verify-container {
@@ -145,6 +170,11 @@
   .resend-button {
     font-size: clamp(0.8rem, 1.5vw, 0.9rem);
   }
+
+  .signout-button {
+    padding: clamp(8px, 1.8vw, 10px) clamp(15px, 3vw, 25px);
+    font-size: clamp(0.85rem, 1.6vw, 1rem);
+  }
 }
 
 /* Tablet devices (481px to 768px) */
@@ -169,5 +199,10 @@
 
   .resend-button {
     font-size: clamp(0.825rem, 1.55vw, 0.925rem);
+  }
+
+  .signout-button {
+    padding: clamp(9px, 1.9vw, 11px) clamp(18px, 3.5vw, 28px);
+    font-size: clamp(0.9rem, 1.7vw, 1.05rem);
   }
 }

@@ -1,28 +1,39 @@
-// src/pages/UserInfo.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
-import { IoArrowBack, IoPencil, IoPerson, IoCall, IoCalendar, IoMailOutline, IoStarOutline, IoLogoInstagram } from 'react-icons/io5';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import {
+  IoArrowBack,
+  IoPencilOutline,
+  IoPerson,
+  IoCallOutline,
+  IoCalendarOutline,
+  IoMailOutline,
+  IoStarOutline,
+  IoLogoInstagram,
+} from 'react-icons/io5';
+import { auth, db } from '../services/firebase';
 import './UserInfo.css';
 
 function UserInfo() {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const { pathname, state } = useLocation();
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [editField, setEditField] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const { state } = useLocation();
+  const [isGoingBack, setIsGoingBack] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isCanceling, setIsCanceling] = useState(false);
+  const [isConnectingInstagram, setIsConnectingInstagram] = useState(false);
+  const [isUpgrading, setIsUpgrading] = useState(false);
 
   useEffect(() => {
-    const auth = getAuth();
-    const db = getFirestore();
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        setError('User not authenticated. Please sign in.');
+        setErrorMessage('User not authenticated. Please sign in.');
         navigate('/signin');
         return;
       }
@@ -31,7 +42,7 @@ function UserInfo() {
         const userDoc = doc(db, 'users', user.uid);
         const docSnap = await getDoc(userDoc);
         if (!docSnap.exists() || !docSnap.data().verified) {
-          setError('Account not verified.');
+          setErrorMessage('Account not verified.');
           navigate('/verify-account');
           return;
         }
@@ -47,7 +58,7 @@ function UserInfo() {
         });
       } catch (err) {
         console.error('User info fetch error:', err.message);
-        setError('Failed to load user info. Please try again.');
+        setErrorMessage('Failed to load user info. Please try again.');
       } finally {
         setIsLoading(false);
       }
@@ -56,8 +67,14 @@ function UserInfo() {
     return () => unsubscribe();
   }, [navigate]);
 
-  const handleBackClick = () => {
-    navigate(state?.from || '/profile');
+  const handleBackClick = async () => {
+    setIsGoingBack(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      navigate(state?.from || '/profile');
+    } finally {
+      setIsGoingBack(false);
+    }
   };
 
   const handleEditClick = (field, currentValue) => {
@@ -68,14 +85,16 @@ function UserInfo() {
 
   const handleSaveEdit = async () => {
     if (!userData) return;
+    setIsSaving(true);
 
-    // Validation
     if (editField === 'displayName' && !editValue.trim()) {
-      setError('Display Name cannot be empty.');
+      setErrorMessage('Display Name cannot be empty.');
+      setIsSaving(false);
       return;
     }
     if (editField === 'phoneNumber' && editValue && !editValue.match(/^\+?\d{7,15}$/)) {
-      setError('Please enter a valid phone number (e.g., +1234567890 or 1234567890).');
+      setErrorMessage('Please enter a valid phone number (e.g., +1234567890 or 1234567890).');
+      setIsSaving(false);
       return;
     }
     if (editField === 'dateOfBirth' && editValue) {
@@ -87,38 +106,67 @@ function UserInfo() {
         age--;
       }
       if (isNaN(dob.getTime())) {
-        setError('Please enter a valid date.');
+        setErrorMessage('Please enter a valid date.');
+        setIsSaving(false);
         return;
       }
       if (age < 13) {
-        setError('You must be at least 13 years old.');
+        setErrorMessage('You must be at least 13 years old.');
+        setIsSaving(false);
         return;
       }
     }
 
-    const auth = getAuth();
-    const db = getFirestore();
-    const userDoc = doc(db, 'users', auth.currentUser.uid);
-
     try {
+      const userDoc = doc(db, 'users', auth.currentUser.uid);
       const updateData = { [editField]: editValue };
       await updateDoc(userDoc, updateData);
       setUserData((prev) => ({ ...prev, [editField]: editValue }));
       setIsEditModalOpen(false);
       setEditField(null);
       setEditValue('');
-      setError('');
+      setErrorMessage('');
     } catch (err) {
       console.error('Update error:', err.message);
-      setError('Failed to save changes. Please try again.');
+      setErrorMessage('Failed to save changes. Please try again.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  const handleCancelEdit = () => {
-    setIsEditModalOpen(false);
-    setEditField(null);
-    setEditValue('');
-    setError('');
+  const handleCancelEdit = async () => {
+    setIsCanceling(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      setIsEditModalOpen(false);
+      setEditField(null);
+      setEditValue('');
+      setErrorMessage('');
+    } finally {
+      setIsCanceling(false);
+    }
+  };
+
+  const handleConnectInstagram = async () => {
+    setIsConnectingInstagram(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log('Initiate Instagram connection');
+    } catch (err) {
+      setErrorMessage('Failed to connect Instagram. Please try again.');
+    } finally {
+      setIsConnectingInstagram(false);
+    }
+  };
+
+  const handleUpgradeClick = async () => {
+    setIsUpgrading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      navigate('/upgrade');
+    } finally {
+      setIsUpgrading(false);
+    }
   };
 
   const getPageTitle = () => {
@@ -147,7 +195,7 @@ function UserInfo() {
       case 'phoneNumber':
         return {
           title: 'Phone Number',
-          icon: <IoCall size={32} />,
+          icon: <IoCallOutline size={32} />,
           inputType: 'tel',
           isTextarea: false,
           placeholder: 'Enter your phone number (e.g., +1234567890)',
@@ -155,7 +203,7 @@ function UserInfo() {
       case 'dateOfBirth':
         return {
           title: 'Date of Birth',
-          icon: <IoCalendar size={32} />,
+          icon: <IoCalendarOutline size={32} />,
           inputType: 'date',
           isTextarea: false,
           placeholder: 'Select your date of birth',
@@ -180,7 +228,8 @@ function UserInfo() {
               type="button"
               className="edit-modal-close"
               onClick={handleCancelEdit}
-              aria-label="Close edit modal"
+              aria-label={isCanceling ? 'Canceling edit' : 'Close edit modal'}
+              disabled={isCanceling}
             >
               <IoArrowBack size={24} />
             </button>
@@ -195,6 +244,7 @@ function UserInfo() {
                 placeholder={fieldConfig.placeholder}
                 aria-label={`Edit ${fieldConfig.title.toLowerCase()}`}
                 autoFocus
+                disabled={isSaving}
               />
             ) : (
               <input
@@ -205,26 +255,43 @@ function UserInfo() {
                 placeholder={fieldConfig.placeholder}
                 aria-label={`Edit ${fieldConfig.title.toLowerCase()}`}
                 autoFocus
+                disabled={isSaving}
               />
             )}
-            {error && <p className="edit-modal-error">{error}</p>}
+            {errorMessage && <p className="edit-modal-error">{errorMessage}</p>}
           </div>
           <div className="edit-modal-footer">
             <button
               type="button"
               className="edit-modal-save-button"
               onClick={handleSaveEdit}
-              aria-label={`Change ${fieldConfig.title.toLowerCase()}`}
+              aria-label={isSaving ? `Saving ${fieldConfig.title.toLowerCase()}` : `Change ${fieldConfig.title.toLowerCase()}`}
+              disabled={isSaving || isCanceling}
             >
-              Change {fieldConfig.title}
+              {isSaving ? (
+                <>
+                  <span className="button-spinner"></span>
+                  Saving...
+                </>
+              ) : (
+                `Change ${fieldConfig.title}`
+              )}
             </button>
             <button
               type="button"
               className="edit-modal-cancel-button"
               onClick={handleCancelEdit}
-              aria-label="Cancel edit"
+              aria-label={isCanceling ? 'Canceling edit' : 'Cancel edit'}
+              disabled={isSaving || isCanceling}
             >
-              Cancel
+              {isCanceling ? (
+                <>
+                  <span className="button-spinner"></span>
+                  Canceling...
+                </>
+              ) : (
+                'Cancel'
+              )}
             </button>
           </div>
         </div>
@@ -266,7 +333,7 @@ function UserInfo() {
                   onClick={() => handleEditClick('displayName', userData.displayName)}
                   aria-label="Edit display name"
                 >
-                  <IoPencil size={18} />
+                  <IoPencilOutline size={18} />
                 </button>
               </div>
             </div>
@@ -279,7 +346,7 @@ function UserInfo() {
             </div>
             <div className="user-info-item">
               <div className="label-container">
-                <IoCall className="user-info-icon" size={20} />
+                <IoCallOutline className="user-info-icon" size={20} />
                 <span className="user-info-label">Phone Number</span>
               </div>
               <div className="value-container">
@@ -290,13 +357,13 @@ function UserInfo() {
                   onClick={() => handleEditClick('phoneNumber', userData.phoneNumber)}
                   aria-label="Edit phone number"
                 >
-                  <IoPencil size={18} />
+                  <IoPencilOutline size={18} />
                 </button>
               </div>
             </div>
             <div className="user-info-item">
               <div className="label-container">
-                <IoCalendar className="user-info-icon" size={20} />
+                <IoCalendarOutline className="user-info-icon" size={20} />
                 <span className="user-info-label">Date of Birth</span>
               </div>
               <div className="value-container">
@@ -307,7 +374,7 @@ function UserInfo() {
                   onClick={() => handleEditClick('dateOfBirth', userData.dateOfBirth)}
                   aria-label="Edit date of birth"
                 >
-                  <IoPencil size={18} />
+                  <IoPencilOutline size={18} />
                 </button>
               </div>
             </div>
@@ -329,10 +396,18 @@ function UserInfo() {
               <button
                 type="button"
                 className="upgrade-button"
-                onClick={() => navigate('/upgrade')}
-                aria-label="Upgrade to premium"
+                onClick={handleUpgradeClick}
+                aria-label={isUpgrading ? 'Navigating to upgrade' : 'Upgrade to premium'}
+                disabled={isUpgrading}
               >
-                Upgrade to Premium
+                {isUpgrading ? (
+                  <>
+                    <span className="button-spinner"></span>
+                    Upgrading...
+                  </>
+                ) : (
+                  'Upgrade to Premium'
+                )}
               </button>
             )}
           </div>
@@ -353,10 +428,18 @@ function UserInfo() {
               <button
                 type="button"
                 className="connect-button"
-                onClick={() => console.log('Initiate Instagram connection')}
-                aria-label="Connect Instagram account"
+                onClick={handleConnectInstagram}
+                aria-label={isConnectingInstagram ? 'Connecting Instagram account' : 'Connect Instagram account'}
+                disabled={isConnectingInstagram}
               >
-                Connect Instagram
+                {isConnectingInstagram ? (
+                  <>
+                    <span className="button-spinner"></span>
+                    Connecting...
+                  </>
+                ) : (
+                  'Connect Instagram'
+                )}
               </button>
             )}
           </div>
@@ -366,10 +449,10 @@ function UserInfo() {
     }
   };
 
-  if (error && !isEditModalOpen) {
+  if (errorMessage && !isEditModalOpen) {
     return (
       <div className="error-message">
-        <p>{error}</p>
+        <p>{errorMessage}</p>
         <button type="button" onClick={() => window.location.reload()} aria-label="Retry loading">
           Retry
         </button>
@@ -384,9 +467,14 @@ function UserInfo() {
           type="button"
           className="back-button"
           onClick={handleBackClick}
-          aria-label="Go back"
+          aria-label={isGoingBack ? 'Navigating back' : 'Go back'}
+          disabled={isGoingBack}
         >
-          <IoArrowBack size={24} />
+          {isGoingBack ? (
+            <span className="button-spinner"></span>
+          ) : (
+            <IoArrowBack size={24} />
+          )}
         </button>
         <h1 className="user-info-title">{getPageTitle()}</h1>
       </div>

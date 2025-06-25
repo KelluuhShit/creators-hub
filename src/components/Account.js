@@ -1,4 +1,3 @@
-// src/pages/Account.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -25,6 +24,11 @@ function Account() {
   const [editField, setEditField] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // New loading states for buttons
+  const [isSaving, setIsSaving] = useState(false);
+  const [isCanceling, setIsCanceling] = useState(false);
+  const [isConnectingInstagram, setIsConnectingInstagram] = useState(false);
+  const [isGoingBack, setIsGoingBack] = useState(false);
 
   // Fetch user data
   useEffect(() => {
@@ -71,12 +75,28 @@ function Account() {
     return () => unsubscribe();
   }, [navigate]);
 
-  const handleConnectInstagram = () => {
-    console.log('Initiate Instagram connection');
+  const handleConnectInstagram = async () => {
+    setIsConnectingInstagram(true);
+    try {
+      // Placeholder: Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log('Initiate Instagram connection');
+    } catch (err) {
+      setError('Failed to connect Instagram. Please try again.');
+    } finally {
+      setIsConnectingInstagram(false);
+    }
   };
 
-  const handleBackClick = () => {
-    navigate('/profile');
+  const handleBackClick = async () => {
+    setIsGoingBack(true);
+    try {
+      // Simulate navigation delay
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      navigate('/profile');
+    } finally {
+      setIsGoingBack(false);
+    }
   };
 
   const handleEditClick = (field, currentValue) => {
@@ -87,29 +107,35 @@ function Account() {
 
   const handleSaveEdit = async () => {
     if (!userData) return;
+    setIsSaving(true);
 
     // Validation
     if (editField === 'email' && editValue && !editValue.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
       setError('Please enter a valid email address.');
+      setIsSaving(false);
       return;
     }
     if (editField === 'gender' && editValue && !['Male', 'Female', 'Other'].includes(editValue)) {
       setError('Please enter a valid gender (Male, Female, or Other).');
+      setIsSaving(false);
       return;
     }
     if (editField === 'age' && editValue) {
       const age = parseInt(editValue, 10);
       if (isNaN(age) || age < 13 || age > 120) {
         setError('Please enter a valid age (13–120).');
+        setIsSaving(false);
         return;
       }
     }
     if (editField === 'country' && editValue && !editValue.match(/^[A-Za-z\s]{2,}$/)) {
       setError('Please enter a valid country name.');
+      setIsSaving(false);
       return;
     }
     if (editField === 'bio' && editValue.length > 500) {
       setError('Bio cannot exceed 500 characters.');
+      setIsSaving(false);
       return;
     }
 
@@ -127,14 +153,23 @@ function Account() {
     } catch (err) {
       console.error('Update error:', err.message);
       setError('Failed to save changes. Please try again.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  const handleCancelEdit = () => {
-    setIsEditModalOpen(false);
-    setEditField(null);
-    setEditValue('');
-    setError('');
+  const handleCancelEdit = async () => {
+    setIsCanceling(true);
+    try {
+      // Simulate cancel delay
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      setIsEditModalOpen(false);
+      setEditField(null);
+      setEditValue('');
+      setError('');
+    } finally {
+      setIsCanceling(false);
+    }
   };
 
   const getFieldConfig = () => {
@@ -208,6 +243,7 @@ function Account() {
               className="edit-modal-close"
               onClick={handleCancelEdit}
               aria-label="Close edit modal"
+              disabled={isCanceling}
             >
               <IoArrowBack size={24} />
             </button>
@@ -222,6 +258,7 @@ function Account() {
                 placeholder={fieldConfig.placeholder}
                 aria-label={`Edit ${fieldConfig.title.toLowerCase()}`}
                 autoFocus
+                disabled={isSaving}
               />
             ) : (
               <input
@@ -232,6 +269,7 @@ function Account() {
                 placeholder={fieldConfig.placeholder}
                 aria-label={`Edit ${fieldConfig.title.toLowerCase()}`}
                 autoFocus
+                disabled={isSaving}
               />
             )}
             {error && <p className="edit-modal-error">{error}</p>}
@@ -241,17 +279,33 @@ function Account() {
               type="button"
               className="edit-modal-save-button"
               onClick={handleSaveEdit}
-              aria-label={`Change ${fieldConfig.title.toLowerCase()}`}
+              aria-label={isSaving ? `Saving ${fieldConfig.title.toLowerCase()}` : `Change ${fieldConfig.title.toLowerCase()}`}
+              disabled={isSaving || isCanceling}
             >
-              Change {fieldConfig.title}
+              {isSaving ? (
+                <>
+                  <span className="button-loader"></span>
+                  Saving...
+                </>
+              ) : (
+                `Change ${fieldConfig.title}`
+              )}
             </button>
             <button
               type="button"
               className="edit-modal-cancel-button"
               onClick={handleCancelEdit}
-              aria-label="Cancel edit"
+              aria-label={isCanceling ? 'Canceling edit' : 'Cancel edit'}
+              disabled={isSaving || isCanceling}
             >
-              Cancel
+              {isCanceling ? (
+                <>
+                  <span className="button-loader"></span>
+                  Canceling...
+                </>
+              ) : (
+                'Cancel'
+              )}
             </button>
           </div>
         </div>
@@ -277,9 +331,16 @@ function Account() {
           type="button"
           className="back-button"
           onClick={handleBackClick}
-          aria-label="Go back"
+          aria-label={isGoingBack ? 'Navigating back' : 'Go back'}
+          disabled={isGoingBack}
         >
-          <IoArrowBack size={24} />
+          {isGoingBack ? (
+            <>
+              <span className="button-loader"></span>
+            </>
+          ) : (
+            <IoArrowBack size={24} />
+          )}
         </button>
         <h1 className="account-title">Account</h1>
       </div>
@@ -319,9 +380,17 @@ function Account() {
                         type="button"
                         className="connect-instagram-button"
                         onClick={handleConnectInstagram}
-                        aria-label="Connect Instagram account"
+                        aria-label={isConnectingInstagram ? 'Connecting Instagram account' : 'Connect Instagram account'}
+                        disabled={isConnectingInstagram}
                       >
-                        Connect my Instagram
+                        {isConnectingInstagram ? (
+                          <>
+                            <span className="button-loader"></span>
+                            Connecting...
+                          </>
+                        ) : (
+                          'Connect my Instagram'
+                        )}
                       </button>
                     </>
                   )}

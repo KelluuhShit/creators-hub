@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoArrowBack, IoArrowForward, IoEyeOutline, IoHeartOutline, IoPeopleOutline } from 'react-icons/io5';
+import { IoArrowBack, IoChevronForward, IoEyeOutline, IoHeartOutline, IoPeopleOutline } from 'react-icons/io5';
 import { UserContext } from '../context/UserContext';
 import SubscriptionModal from '../components/SubscriptionModal';
 import ActivityChartModal from '../subscribe/free/ActivityChartModal';
@@ -98,7 +98,7 @@ function FreeAnalytics() {
                 onClick={() => handleDetails(item.activity)}
                 aria-label={`View premium details for ${item.activity}`}
               >
-                <IoArrowForward />
+                <IoChevronForward />
               </button>
             </span>
           </div>
