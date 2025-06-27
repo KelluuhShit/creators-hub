@@ -235,9 +235,8 @@ function Account() {
 
     return (
       <div className="edit-modal-overlay" onClick={handleCancelEdit}>
-        <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="edit-account-modal" onClick={(e) => e.stopPropagation()}>
           <div className="edit-modal-header">
-            <div className="edit-modal-icon">{fieldConfig.icon}</div>
             <button
               type="button"
               className="edit-modal-close"
@@ -247,9 +246,10 @@ function Account() {
             >
               <IoArrowBack size={24} />
             </button>
+            <div className="edit-modal-icon">{fieldConfig.icon}</div>
           </div>
           <div className="edit-modal-content">
-            <h2 className="edit-modal-title">Edit {fieldConfig.title}</h2>
+            <h2 className="edit-account-modal-title">Edit {fieldConfig.title}</h2>
             {fieldConfig.isTextarea ? (
               <textarea
                 value={editValue}
@@ -342,7 +342,7 @@ function Account() {
             <IoArrowBack size={24} />
           )}
         </button>
-        <h1 className="account-title">Account</h1>
+        <h5 className="account-title">Account</h5>
       </div>
       {isLoading ? (
         <div className="skeleton-container">
